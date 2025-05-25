@@ -4,6 +4,7 @@
 *.class
 crash.log
 _data/build.json
+dist
 .DS_Store
 .env
 Gemfile.lock
