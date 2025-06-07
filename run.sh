@@ -7,6 +7,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-go build -o ./dist/asciitable ./cmd/asciitable
+CMD="${1:-asciify}"
 
-./dist/asciitable
+go build -o "./dist/${CMD}" "./cmd/${CMD}"
+
+./dist/${CMD}

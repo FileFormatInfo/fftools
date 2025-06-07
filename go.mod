@@ -5,6 +5,7 @@ go 1.24
 require golang.org/x/crypto v0.38.0
 
 require (
+	github.com/anyascii/go v0.3.2 // indirect
 	github.com/fatih/color v1.15.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
