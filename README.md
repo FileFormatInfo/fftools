@@ -11,7 +11,7 @@
 
 - [x] `asciify`: converts to ASCII using [anyascii](https://github.com/anyascii/anyascii)
 - [x] `asciitable`: prints out an table of ASCII characters
-- [ ] `bytecount`: counts the number of occurrences of each byte
+- [x] `bytecount`: counts the number of occurrences of each byte
 - [x] `certinfo`: print info about an x509 (aka SSL/HTTPS) certificate
 - [ ] `ghash`: calculate various [hashes available in the Go standard library](https://pkg.go.dev/crypto#Hash)
 - [x] `hexdumpc`: generate canonical hexdump (`hexdump -C`) output in case you don't have [`hexdump`](https://man7.org/linux/man-pages/man1/hexdump.1.html) installed

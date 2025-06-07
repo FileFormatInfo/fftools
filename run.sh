@@ -7,8 +7,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-CMD="${1:-asciify}"
+CMD="${1:-bytecount}"
 
 go build -o "./dist/${CMD}" "./cmd/${CMD}"
 
-./dist/${CMD}
+cat README.md | ./dist/${CMD}

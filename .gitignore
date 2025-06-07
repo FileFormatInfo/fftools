@@ -1,5 +1,6 @@
 *~
 **/*#
+boo
 .cache
 *.class
 crash.log
@@ -7,6 +8,7 @@ _data/build.json
 dist
 .DS_Store
 .env
+foo
 Gemfile.lock
 .idea/
 .jekyll-metadata

@@ -42,12 +42,12 @@ func main() {
 
 	header := []string{""}
 	for i := 0; i <= 0xf0; i += 0x10 {
-		header = append(header, fmt.Sprintf("0x%x", i))
+		header = append(header, fmt.Sprintf("0x%02X", i))
 	}
 	table.Header(header)
 
 	for row := 0; row <= 0x0F; row += 0x01 {
-		data := []string{fmt.Sprintf("0x%02x", row)}
+		data := []string{fmt.Sprintf("0x%02X", row)}
 		for col := 0; col <= 0xF0; col += 0x10 {
 			i := row + col
 			if i < 0x20 || i == 0x7F {
