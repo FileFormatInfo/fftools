@@ -15,6 +15,7 @@ import (
 
 func outputPretty(out io.Writer, counts map[byte]int) {
 
+	// LATER: use https://github.com/jeandeaual/go-locale to determine locale
 	prettyPrinter := message.NewPrinter(language.English)
 	// LATER: option to output markdown or pure ASCII (i.e. not using box-drawing characters)
 	table := tablewriter.NewTable(out,
