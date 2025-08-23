@@ -18,3 +18,6 @@
 - [ ] `trilobyte`: translates bytes according to a map
 - [ ] `ustrings`: like the standard [`strings`](https://man7.org/linux/man-pages/man1/strings.1.html) utility, but with Unicode support
 - [ ] `unhexdump`: convert the (edited) output of [`hexdump -C`](https://man7.org/linux/man-pages/man1/hexdump.1.html) back to binary
+- [ ] proper command line parsing (cobra)
+- [ ] man pages
+- [ ] distribution packages
