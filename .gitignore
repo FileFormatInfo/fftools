@@ -23,3 +23,5 @@ tmp-*
 venv/
 .venv/
 _work/
+# Added by goreleaser init:
+dist/

@@ -1,0 +1,153 @@
+version: 2
+
+project_name: fftools
+
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod tidy
+    # you may remove this if you don't need go generate
+    - go generate ./...
+
+builds:
+  - id: asciify
+    main: ./cmd/asciify/asciify.go
+    binary: asciify
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+
+  - id: asciitable
+    main: ./cmd/asciitable/asciitable.go
+    binary: asciitable
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+
+  - id: bytecount
+    main: ./cmd/bytecount/bytecount.go
+    binary: bytecount
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+
+  - id: certinfo
+    main: ./cmd/certinfo/certinfo.go
+    binary: certinfo
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+
+  - id: hexdumpc
+    main: ./cmd/hexdumpc/hexdumpc.go
+    binary: hexdumpc
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+
+  - id: unicount
+    main: ./cmd/unicount/unicount.go
+    binary: unicount
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+
+  - id: uniwhat
+    main: ./cmd/uniwhat/uniwhat.go
+    binary: uniwhat
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+
+archives:
+  - formats: [tar.gz]
+    # this name template makes the OS and Arch compatible with the results of `uname`.
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    # use zip for windows archives
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    ids:
+      - asciify
+      - asciitable
+      - bytecount
+      - certinfo
+      - hexdumpc
+      - unicount
+      - uniwhat
+
+nfpms:
+  - id: fftools
+    package_name: fftools
+    ids:
+      - asciify
+      - asciitable
+      - bytecount
+      - certinfo
+      - hexdumpc
+      - unicount
+      - uniwhat
+    vendor: FileFormatInfo
+    homepage: "https://www.fileformat.info/"
+    maintainer: Andrew Marcuse <fileformat@gmail.com>
+    description: |-
+      Utilities for analyzing, viewing and fixing file formats.
+    license: GPL-3.0-and-later
+    formats:
+      - deb
+      - rpm
+
+release:
+  github:
+    owner: FileFormatInfo
+    name: fftools
+
+report_sizes: true
+
+source:
+  enabled: true
+  name_template: "{{ .ProjectName }}.src"
+
+upx:
+  - enabled: true
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+release:
+  footer: >-
+
+    ---
+
+    Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
