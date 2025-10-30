@@ -4,10 +4,8 @@ project_name: fftools
 
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod tidy
-    # you may remove this if you don't need go generate
-    - go generate ./...
+    - ./bin/gen_manpages.sh
 
 builds:
   - id: asciify
@@ -79,6 +77,13 @@ builds:
       - linux
       - windows
       - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X github.com/FileFormatInfo/fftools/internal.VERSION={{.Version}}
+      - -X github.com/FileFormatInfo/fftools/internal.LASTMOD={{.Timestamp}}
+      - -X github.com/FileFormatInfo/fftools/internal.COMMIT={{.ShortCommit}}
+      - -X github.com/FileFormatInfo/fftools/internal.BUILDER=goreleaser
 
 archives:
   - formats: [tar.gz]
@@ -94,7 +99,13 @@ archives:
     format_overrides:
       - goos: windows
         formats: [zip]
-    ids:
+  #- files:
+  #  - LICENSE.txt
+  #  - manpages/*
+
+homebrew_casks:
+  - name: fftools
+    binaries:
       - asciify
       - asciitable
       - bytecount
@@ -102,18 +113,24 @@ archives:
       - hexdumpc
       - unicount
       - uniwhat
+    # manpages:
+    # completions:
+    directory: pkg/cask
+    skip_upload: true
+    commit_author:
+      name: Andrew Marcuse
+      email: fileformat@gmail.com
+    description: "Utilities for analyzing, viewing and fixing file formats."
+    homepage: "https://tools.fileformat.info/"
+    license: "GPL-3.0-or-later"
+    repository:
+      owner: FileFormatInfo
+      name: fftools-tap
+      # token:
 
 nfpms:
   - id: fftools
     package_name: fftools
-    ids:
-      - asciify
-      - asciitable
-      - bytecount
-      - certinfo
-      - hexdumpc
-      - unicount
-      - uniwhat
     vendor: FileFormatInfo
     homepage: "https://www.fileformat.info/"
     maintainer: Andrew Marcuse <fileformat@gmail.com>
@@ -123,27 +140,29 @@ nfpms:
     formats:
       - deb
       - rpm
+#  - contents:
+#      - src: ./manpages/
+#        dst: /usr/share/man/man1/
+#        type: dir
+#        file_info:
+#          mode: 0644
 
-release:
-  github:
-    owner: FileFormatInfo
-    name: fftools
 
 report_sizes: true
 
-source:
-  enabled: true
-  name_template: "{{ .ProjectName }}.src"
+#source:
+#  enabled: true
+#  name_template: "{{ .ProjectName }}.src"
 
-upx:
-  - enabled: true
+#upx:
+#  - enabled: true
 
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
+#changelog:
+#  sort: asc
+#  filters:
+#    exclude:
+#      - "^docs:"
+#      - "^test:"
 
 release:
   footer: >-
@@ -151,3 +170,6 @@ release:
     ---
 
     Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
+#  github:
+#    owner: FileFormatInfo
+#    name: fftools
