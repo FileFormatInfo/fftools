@@ -1,5 +1,7 @@
 # File Format Tools [<img alt="Logo for fftools" src="docs/favicon.svg" height="96" align="right"/>](https://www.fileformat.info/)
 
+[![build](https://github.com/FileFormatInfo/fftools/actions/workflows/build.yaml/badge.svg)](https://github.com/FileFormatInfo/fftools/actions/workflows/build.yaml)
+
 
 ## Programs
 
@@ -10,6 +12,11 @@
 - `hexdumpc`: generate canonical hexdump (`hexdump -C`) output in case you don't have [`hexdump`](https://man7.org/linux/man-pages/man1/hexdump.1.html) installed
 - `unicount`: count Unicode codepoints in a file
 - `uniwhat`: print the names of each Unicode character in a file
+
+## Experiments
+
+- `wombat` - tests terminal screen functions
+- `spinner` - terminal spinner for long-running tasks
 
 ## Credits
 
