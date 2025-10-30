@@ -29,7 +29,3 @@
 
 
 ## General
-
-- [ ] man pages
-- [ ] goreleaser
-- [ ] [release security](https://github.com/goreleaser/example-secure)
