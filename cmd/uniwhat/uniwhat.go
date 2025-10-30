@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/FileFormatInfo/fftools/internal"
 	"github.com/spf13/pflag"
 	"golang.org/x/text/unicode/runenames"
 )
@@ -18,8 +19,14 @@ func main() {
 	var codepoint = pflag.Bool("codepoint", true, "Print the U+XXXX codepoint")
 	var offset = pflag.Bool("offset", true, "Print the offset")
 	var char = pflag.Bool("char", false, "Print the character itself")
+	var version = pflag.Bool("version", false, "Print version information")
 
 	pflag.Parse()
+
+	if *version {
+		internal.PrintVersion("uniwhat")
+		return
+	}
 
 	args := pflag.Args()
 	if len(args) == 0 {

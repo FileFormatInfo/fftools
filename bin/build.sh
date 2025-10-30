@@ -20,6 +20,11 @@ if [ ! -d "${DIST_DIR}" ]; then
 fi
 
 FILES=$(ls "${REPO_DIR}/cmd")
+LASTMOD=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+COMMIT=$(git rev-parse --short HEAD)
+if [[ $(git diff --stat) != '' ]]; then
+	COMMIT="${COMMIT}-dirty"
+fi
 
 for f in $FILES; do
 	if [ -f "${DIST_DIR}/${f}" ]; then
@@ -27,7 +32,10 @@ for f in $FILES; do
 		continue
 	fi
 	echo "INFO: compiling ${f} to dist directory"
-	go build -o "${DIST_DIR}/${f}" "${REPO_DIR}/cmd/${f}"
+	go build \
+		-ldflags "-s -w -X github.com/FileFormatInfo/fftools/internal.LASTMOD=${LASTMOD} -X github.com/FileFormatInfo/fftools/internal.COMMIT=${COMMIT} -X github.com/FileFormatInfo/fftools/internal.BUILDER=build.sh" \
+		-o "${DIST_DIR}/${f}" \
+		"${REPO_DIR}/cmd/${f}"
 done
 
 echo "INFO: complete at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
