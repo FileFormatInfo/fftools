@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
-func hexdump(fileName string, offset, length int64) error {
+func hexdump(fileName string, offset, length int64, w io.Writer) error {
 
 	// Open the file
 	file, err := os.Open(fileName)
@@ -24,7 +24,7 @@ func hexdump(fileName string, offset, length int64) error {
 		}
 	}
 
-	reader := bufio.NewReader(file)
+	reader := bufio.NewReaderSize(file, 1024*1024)
 
 	var count int64 = 0
 	for {
@@ -38,7 +38,7 @@ func hexdump(fileName string, offset, length int64) error {
 			return err
 		}
 
-		printLine(offset+count, buf[:n])
+		printLine(w, offset+count, buf[:n])
 
 		count += int64(n)
 		if length > 0 && count >= length {
@@ -48,39 +48,39 @@ func hexdump(fileName string, offset, length int64) error {
 	return nil
 }
 
-func printLine(offset int64, buf []byte) {
+func printLine(w io.Writer, offset int64, buf []byte) {
 	// Print the offset
-	fmt.Printf("%08x  ", offset)
+	fmt.Fprintf(w, "%08x  ", offset)
 
 	// Print the hex values
 	for i := 0; i < len(buf); i++ {
 		if i%8 == 0 && i != 0 {
-			fmt.Print(" ")
+			fmt.Fprint(w, " ")
 		}
-		fmt.Printf("%02x ", buf[i])
+		fmt.Fprintf(w, "%02x ", buf[i])
 	}
 	// Pad the line to 48 characters
 	for i := len(buf); i < 16; i++ {
 		if i%8 == 0 && i != 0 {
-			fmt.Print(" ")
+			fmt.Fprintf(w, " ")
 		}
-		fmt.Print("   ")
+		fmt.Fprint(w, "   ")
 	}
 
 	// Print the ASCII values
-	fmt.Print(" |")
+	fmt.Fprint(w, " |")
 	for _, b := range buf {
 		if b >= 32 && b <= 126 {
-			fmt.Printf("%c", b)
+			fmt.Fprintf(w, "%c", b)
 		} else {
-			fmt.Print(".")
+			fmt.Fprint(w, ".")
 		}
 	}
 	// Pad the line to 16 characters
 	for i := len(buf); i < 16; i++ {
-		fmt.Print(" ")
+		fmt.Fprint(w, " ")
 	}
-	fmt.Println("|")
+	fmt.Fprintln(w, "|")
 }
 
 func main() {
@@ -106,7 +106,7 @@ func main() {
 			arg = "/dev/stdin"
 		}
 
-		if err := hexdump(arg, *offset, *length); err != nil {
+		if err := hexdump(arg, *offset, *length, bufio.NewWriter(os.Stdout)); err != nil {
 			panic(err)
 		}
 	}

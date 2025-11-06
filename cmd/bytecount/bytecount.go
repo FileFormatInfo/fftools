@@ -56,7 +56,7 @@ func main() {
 		counts[byte(i)] = 0
 	}
 
-	reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReaderSize(os.Stdin, 1024*1024)
 	for {
 		b, err := reader.ReadByte()
 		if err == io.EOF {
