@@ -18,6 +18,7 @@
 
 ## Uniwhat and Unicount
 
+- [ ] Flag for whitespace (i.e. separate from control)
 - [ ] Flag to include/exclude specific scripts (not just ASCII)
 - [ ] Flag to print script
 - [ ] Flag to print block

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	_ "embed"
 	"fmt"
 	"io"
 	"log"
@@ -12,14 +13,21 @@ import (
 	"golang.org/x/text/unicode/runenames"
 )
 
+//go:embed README.md
+var helpText string
+
 func main() {
 
-	var control = pflag.Bool("control", false, "Include control characters")
 	var ascii = pflag.Bool("ascii", false, "Include ASCII characters")
 	var codepoint = pflag.Bool("codepoint", true, "Print the U+XXXX codepoint")
+	var line = pflag.Bool("line", true, "Print the line number")
 	var offset = pflag.Bool("offset", true, "Print the offset")
 	var char = pflag.Bool("char", false, "Print the character itself")
-	var version = pflag.Bool("version", false, "Print version information")
+
+	var first = pflag.Bool("first", false, "Only print the first occurrence of each character")
+
+	var help = pflag.Bool("help", false, "Detailed help")
+	var version = pflag.Bool("version", false, "Version info")
 
 	pflag.Parse()
 
@@ -28,10 +36,19 @@ func main() {
 		return
 	}
 
+	if *help {
+		fmt.Printf("%s\n", helpText)
+		return
+	}
+
 	args := pflag.Args()
 	if len(args) == 0 {
-		args = []string{"-"}
+		fmt.Printf("Usage: uniwhat [options] file ...\n\n")
+		pflag.PrintDefaults()
+		return
 	}
+
+	firstMap := make(map[rune]bool)
 
 	for _, arg := range args {
 		if arg == "-" {
@@ -46,9 +63,10 @@ func main() {
 		}
 		defer file.Close()
 
-		reader := bufio.NewReader(file)
+		reader := bufio.NewReaderSize(file, 1024*1024)
 
 		var pos int = 0
+		var lineNum int = 1
 
 		// Loop to read runes one by one
 		for {
@@ -59,21 +77,32 @@ func main() {
 				}
 				log.Fatalf("Error reading rune: %v", err)
 			}
-			if r < 0x1F && !*control {
-				pos += rsize
-				continue // Skip control characters if --control is not set
+			pos += rsize
+
+			if r == '\n' {
+				lineNum++
 			}
-			if r <= 0x7E && !*ascii {
-				pos += rsize
+
+			if !*ascii && ((r >= 0x20 && r <= 0x7E) || r == 0x09 || r == 0x0A || r == 0x0D) {
 				continue // Skip ASCII characters if --ascii is not set
 			}
+
+			if *first {
+				if _, exists := firstMap[r]; exists {
+					continue
+				}
+				firstMap[r] = true
+			}
+
 			name := runenames.Name(r)
 			if name == "" {
 				name = "<unknown>"
 			}
 			if *offset {
-				// Note: Getting the exact byte offset of the rune is complex; this is a placeholder
-				fmt.Printf("%08x ", pos)
+				fmt.Printf("%08x ", pos-rsize)
+			}
+			if *line {
+				fmt.Printf("%6d ", lineNum)
 			}
 			if *codepoint {
 				fmt.Printf("U+%04X ", r)
@@ -82,8 +111,6 @@ func main() {
 				fmt.Printf("%c ", r)
 			}
 			fmt.Printf("%s\n", name)
-
-			pos += rsize
 		}
 	}
 }

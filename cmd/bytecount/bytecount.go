@@ -4,11 +4,14 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"os"
 
+	"github.com/FileFormatInfo/fftools/internal"
 	"github.com/olekukonko/tablewriter"
 	"github.com/olekukonko/tablewriter/renderer"
 	"github.com/olekukonko/tablewriter/tw"
+	"github.com/spf13/pflag"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )
@@ -32,17 +35,19 @@ func outputPretty(out io.Writer, counts map[byte]int) {
 	)
 
 	header := []string{""}
-	for i := 0; i <= 0xf0; i += 0x10 {
+	for i := 0; i <= 0x0f; i += 1 {
 		header = append(header, fmt.Sprintf("0x%02X", i))
 	}
+	header = append(header, "")
 	table.Header(header)
 
-	for row := 0; row <= 0x0F; row += 0x01 {
+	for row := 0; row <= 0xF0; row += 0x10 {
 		data := []string{fmt.Sprintf("0x%02X", row)}
-		for col := 0; col <= 0xF0; col += 0x10 {
+		for col := 0; col <= 0x0F; col += 0x01 {
 			i := row + col
 			data = append(data, prettyPrinter.Sprintf("%d", counts[byte(i)]))
 		}
+		data = append(data, fmt.Sprintf("0x%02X", row))
 		table.Append(data)
 	}
 
@@ -50,25 +55,71 @@ func outputPretty(out io.Writer, counts map[byte]int) {
 
 }
 
-func main() {
+func processFile(fileName string) error {
 	counts := make(map[byte]int)
 	for i := 0; i < 256; i++ {
 		counts[byte(i)] = 0
 	}
 
-	reader := bufio.NewReaderSize(os.Stdin, 1024*1024)
+	file, err := os.Open(fileName)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	reader := bufio.NewReaderSize(file, 1024*1024)
 	for {
 		b, err := reader.ReadByte()
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "ERROR: unable to read input: %v\n", err)
-			os.Exit(1)
+			return err
 		}
 		counts[b]++
 	}
 
 	//LATER: other output formats: plain, JSON, CSV
 	outputPretty(os.Stdout, counts)
+
+	return nil
+}
+
+func main() {
+
+	var help = pflag.BoolP("help", "h", false, "Show help message")
+	var version = pflag.Bool("version", false, "Print version information")
+
+	pflag.Parse()
+
+	if *version {
+		internal.PrintVersion("bytecount")
+		return
+	}
+
+	if *help {
+		// LATER: print man page
+		fmt.Printf("Usage: bytecount [options] [file...]\n\n")
+		fmt.Printf("Options:\n")
+		pflag.PrintDefaults()
+		return
+	}
+
+	args := pflag.Args()
+	if len(args) == 0 {
+		fmt.Printf("Usage: bytecount [options] file ...\n\n")
+		return
+	}
+
+	for _, arg := range args {
+		if arg == "-" {
+			arg = "/dev/stdin"
+		}
+
+		if len(args) > 1 {
+			fmt.Printf("Processing file: %s\n", arg)
+		}
+
+		processFile(arg)
+	}
 }

@@ -30,6 +30,7 @@
 - [ ] `ghash`: calculate various [hashes available in the Go standard library](https://pkg.go.dev/crypto#Hash)
 - [ ] `body`: prints specific lines of a file (in between `head` and `tail`)
 - [ ] `trilobyte`: translates bytes according to a map
+- [ ] `trune`: translates Unicode codepoints (runes) according to a map
 - [ ] `ustrings`: like the standard [`strings`](https://man7.org/linux/man-pages/man1/strings.1.html) utility, but with Unicode support
 - [ ] `utf8ify`: convert to UTF-8
 - [ ] `unhexdump`: convert the (edited) output of [`hexdump -C`](https://man7.org/linux/man-pages/man1/hexdump.1.html) back to binary

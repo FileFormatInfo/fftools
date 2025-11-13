@@ -10,6 +10,8 @@ import (
 
 var Logger = initLogger()
 var LogLevel = slog.LevelInfo
+const LevelTrace  = slog.Level(-8)
+
 
 // level=Trace is for stuff that should not be logged in production, either because it's too verbose or because it contains sensitive information.
 
