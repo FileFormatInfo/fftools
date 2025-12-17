@@ -23,6 +23,7 @@
 - [ ] Flag to print script
 - [ ] Flag to print block
 - [ ] Flag for format: utf8/16/32/latin1/etc.
+- [ ] Flag to print column (in row)
 
 ## Unicount
 

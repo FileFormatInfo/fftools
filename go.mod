@@ -7,8 +7,10 @@ toolchain go1.24.2
 require (
 	github.com/anyascii/go v0.3.2
 	github.com/olekukonko/tablewriter v1.0.7
+	github.com/rogpeppe/go-internal v1.14.1
 	github.com/spf13/pflag v1.0.6
 	golang.org/x/crypto v0.38.0
+	golang.org/x/term v0.36.0
 	golang.org/x/text v0.26.0
 )
 
@@ -21,5 +23,5 @@ require (
 	github.com/olekukonko/ll v0.0.8 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	golang.org/x/sys v0.37.0 // indirect
-	golang.org/x/term v0.36.0 // indirect
+	golang.org/x/tools v0.33.0 // indirect
 )
