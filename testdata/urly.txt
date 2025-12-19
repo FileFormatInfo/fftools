@@ -19,8 +19,8 @@ exec urly --scheme=postgresql postgres://user@server.example.com/db
 stdout 'postgresql://user@server\.example\.com/db'
 
 # json output
-exec urly --output=json https://u:p@example.com/path/to/file.ext?param=value
-stdout '{"scheme":"https","host":"example\.com","port":"","path":"/path/to/file\.ext","query":"param=value","fragment":"","username":"u","password":"p","url":"https://u:p@example\.com/path/to/file\.ext\?param=value","params":{"param":\["value"\]}}'
+exec urly --output=jsonl https://u:p@example.com/path/to/file.ext?param=value
+stdout '{"scheme":"https","hostname":"example\.com","host":"example\.com","port":"","path":"/path/to/file\.ext","query":"param=value","fragment":"","username":"u","password":"p","url":"https://u:p@example\.com/path/to/file\.ext\?param=value","params":{"param":\["value"\]}}'
 
 # add a parameter
 # remove a parameter

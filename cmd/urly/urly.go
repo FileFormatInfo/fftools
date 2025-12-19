@@ -34,6 +34,7 @@ func setPassword(userInfo *url.Userinfo, password string) *url.Userinfo {
 
 type UrlJson struct {
 	Scheme   string              `json:"scheme"`
+	Hostname string              `json:"hostname"`
 	Host     string              `json:"host"`
 	Port     string              `json:"port"`
 	Path     string              `json:"path"`
@@ -45,10 +46,17 @@ type UrlJson struct {
 	Params   map[string][]string `json:"params,omitempty"`
 }
 
-func toJson(theUrl *url.URL) string {
+func toJson(theUrl *url.URL, pretty bool) string {
+	var theHost string
+	if theUrl.Port() != "" {
+		theHost = fmt.Sprintf("%s:%s", theUrl.Hostname(), theUrl.Port())
+	} else {
+		theHost = theUrl.Hostname()
+	}
 	urlJson := UrlJson{
 		Scheme:   theUrl.Scheme,
-		Host:     theUrl.Hostname(),
+		Hostname: theUrl.Hostname(),
+		Host:     theHost,
 		Port:     theUrl.Port(),
 		Path:     theUrl.Path,
 		Query:    theUrl.RawQuery,
@@ -63,7 +71,13 @@ func toJson(theUrl *url.URL) string {
 			urlJson.Password = password
 		}
 	}
-	jsonStr, err := json.Marshal(urlJson)
+	var jsonStr []byte
+	var err error
+	if pretty {
+		jsonStr, err = json.MarshalIndent(urlJson, "", "  ")
+	} else {
+		jsonStr, err = json.Marshal(urlJson)
+	}
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: unable to marshal URL to JSON: %v\n", err)
 		os.Exit(1)
@@ -77,14 +91,32 @@ var helpText = `urly: A URL parsing and processing tool.`
 func main() {
 
 	var scheme = pflag.String("scheme", "", "Set the URL scheme")
-	var envPassword = pflag.String("password-env", "", "Environment variable containing the password for URL processing")
-	var stdinPassword = pflag.Bool("password-stdin", false, "Read password from standard input")
-	var envUrl = pflag.String("url-env", "", "Environment variable containing the URL to process")
+	var noScheme = pflag.Bool("no-scheme", false, "Remove the URL scheme")
+
 	var envUsername = pflag.String("username-env", "", "Environment variable containing the username for URL processing")
 	var textUsername = pflag.String("username", "", "Username for URL processing")
-	//LATER: var format = pflag.String("format", "text", "Output format: text or json")
+	var noUsername = pflag.Bool("no-username", false, "Remove the username from the URL")
+
+	var envPassword = pflag.String("password-env", "", "Environment variable containing the password for URL processing")
+	var stdinPassword = pflag.Bool("password-stdin", false, "Read password from standard input")
+	var noPassword = pflag.Bool("no-password", false, "Remove the password from the URL")
+
+	var hostname = pflag.String("hostname", "", "Set the URL hostname")
+	var noHostname = pflag.Bool("no-hostname", false, "Remove the URL hostname")
+	var port = pflag.String("port", "", "Set the URL port")
+	var noPort = pflag.Bool("no-port", false, "Remove the URL port")
+	var path = pflag.String("path", "", "Set the URL path")
+	var noPath = pflag.Bool("no-path", false, "Remove the URL path")
+	var query = pflag.String("query", "", "Set the URL query")
+	var noQuery = pflag.Bool("no-query", false, "Remove the URL query")
+	var fragment = pflag.String("fragment", "", "Set the URL fragment")
+	var noFragment = pflag.Bool("no-fragment", false, "Remove the URL fragment")
+
+	var envUrl = pflag.String("url-env", "", "Environment variable containing the URL to process")
+
 	var output = pflag.String("output", "url", "Output type: url, scheme, host, port, path, query, fragment, userinfo, username, password")
 	var newline = pflag.Bool("newline", false, "Append newline to output")
+
 	var help = pflag.Bool("help", false, "Detailed help")
 	var version = pflag.Bool("version", false, "Version info")
 
@@ -96,7 +128,10 @@ func main() {
 	}
 
 	if *help {
-		fmt.Printf("%s\n", helpText)
+		fmt.Println("urly - manipulate URLs")
+		pflag.PrintDefaults()
+		fmt.Println()
+		fmt.Println("Use `man urly` for detailed help.")
 		return
 	}
 
@@ -128,13 +163,35 @@ func main() {
 		theUrl = &url.URL{}
 	}
 
-	if *envUsername != "" {
+	if *noScheme {
+		theUrl.Scheme = ""
+	} else if *scheme != "" {
+		theUrl.Scheme = *scheme
+	}
+
+	if *noUsername {
+		if theUrl.User != nil {
+			thePassword, hasPassword := theUrl.User.Password()
+			if hasPassword {
+				theUrl.User = url.UserPassword("", thePassword)
+			} else {
+				theUrl.User = nil
+			}
+		}
+	} else if *envUsername != "" {
 		theUrl.User = setUserName(theUrl.User, os.Getenv(*envUsername))
 	} else if *textUsername != "" {
 		theUrl.User = setUserName(theUrl.User, *textUsername)
 	}
 
-	if *envPassword != "" {
+	if *noPassword {
+		if theUrl.User != nil {
+			theUsername := theUrl.User.Username()
+			theUrl.User = url.User(theUsername)
+		} else {
+			theUrl.User = nil
+		}
+	} else if *envPassword != "" {
 		theUrl.User = setPassword(theUrl.User, os.Getenv(*envPassword))
 	} else if *stdinPassword {
 		var password string
@@ -146,8 +203,48 @@ func main() {
 		theUrl.User = setPassword(theUrl.User, password)
 	}
 
-	if *scheme != "" {
+	if *noScheme {
+		theUrl.Scheme = ""
+	} else if *scheme != "" {
 		theUrl.Scheme = *scheme
+	}
+
+	if *noHostname {
+		if theUrl.Port() != "" {
+			theUrl.Host = ":" + theUrl.Port()
+		} else {
+			theUrl.Host = ""
+		}
+	} else if *hostname != "" {
+		if theUrl.Port() != "" {
+			theUrl.Host = *hostname + ":" + theUrl.Port()
+		} else {
+			theUrl.Host = *hostname
+		}
+	}
+
+	if *noPort {
+		theUrl.Host = theUrl.Hostname()
+	} else if *port != "" {
+		theUrl.Host = fmt.Sprintf("%s:%s", theUrl.Hostname(), *port)
+	}
+
+	if *noPath {
+		theUrl.Path = ""
+	} else if *path != "" {
+		theUrl.Path = *path
+	}
+
+	if *noQuery {
+		theUrl.RawQuery = ""
+	} else if *query != "" {
+		theUrl.RawQuery = *query
+	}
+
+	if *noFragment {
+		theUrl.Fragment = ""
+	} else if *fragment != "" {
+		theUrl.Fragment = *fragment
 	}
 
 	switch *output {
@@ -186,7 +283,9 @@ func main() {
 			}
 		}
 	case "json":
-		fmt.Print(toJson(theUrl))
+		fmt.Print(toJson(theUrl, true))
+	case "jsonl":
+		fmt.Print(toJson(theUrl, false))
 	default:
 		fmt.Fprintf(os.Stderr, "ERROR: Unknown output type: %s\n", *output)
 		os.Exit(1)

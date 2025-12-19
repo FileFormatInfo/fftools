@@ -21,15 +21,20 @@ else
 	echo "INFO: using existing manpage directory ${MANPAGE_DIR}"
 fi
 
-FILES=$(ls "${REPO_DIR}/cmd")
+PROGRAMS=$(ls "${REPO_DIR}/cmd")
 
-for f in $FILES; do
-	if [ -f "${MANPAGE_DIR}/${f}" ]; then
-		echo "WARNING: file ${MANPAGE_DIR}/${f} already exists"
+for PROGRAM in $PROGRAMS; do
+	if [ -f "${MANPAGE_DIR}/${PROGRAM}.1" ]; then
+		echo "WARNING: file ${MANPAGE_DIR}/${PROGRAM}.1 already exists"
 		continue
 	fi
-	echo "INFO: compiling ${f}"
-	#LATER: go build -o "${MANPAGE_DIR}/${f}" "${REPO_DIR}/cmd/${f}"
+	echo "INFO: compiling ${PROGRAM} manpage to ${MANPAGE_DIR}/${PROGRAM}.1"
+	if [ ! -f "${REPO_DIR}/cmd/${PROGRAM}/README.md" ]; then
+		echo "WARNING: missing README.md for ${PROGRAM}, skipping"
+		continue
+	fi
+	# generate manpage from README.md
+	pandoc --standalone --to man "${REPO_DIR}/cmd/${PROGRAM}/README.md" -o "${MANPAGE_DIR}/${PROGRAM}.1"
 done
 
 echo "INFO: complete at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
