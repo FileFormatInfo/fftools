@@ -29,6 +29,21 @@
 
 - [ ] Print initial offset (optional)
 
+## urly
+
+- [ ] defaultport/nodefaultport
+- [ ] punycode/idn - conversion to/from punycode
+- [ ] sort: sort params
+- [ ] arrays: switch multi-value params between different formats
+- [ ] note about https://curl.se/trurl/manual.html
+- [ ] set: set a parameter
+- [ ] add: add a parameter
+- [ ] remove: remove a parameter
+- [ ] get: get a parameter value, first value if array (always a string)
+- [ ] getall: get all values (always an array)
+- [ ] pathset: set a specific index of the path
+- [ ] mask: replace parts with asterisk (or --maskchar)
+
 ## Hexview (new)
 
 - [ ] show `hexdump -C` interactively

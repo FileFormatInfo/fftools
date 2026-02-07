@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/FileFormatInfo/fftools/internal"
 	"github.com/spf13/pflag"
@@ -111,6 +112,10 @@ func main() {
 	var noQuery = pflag.Bool("no-query", false, "Remove the URL query")
 	var fragment = pflag.String("fragment", "", "Set the URL fragment")
 	var noFragment = pflag.Bool("no-fragment", false, "Remove the URL fragment")
+
+	var addParams = pflag.StringArray("addparam", []string{}, "Add a query parameter (key=value)")
+	var setParams = pflag.StringArray("setparam", []string{}, "Set a query parameter (key=value)")
+	var delParams = pflag.StringArray("delparam", []string{}, "Delete a query parameter (key)")
 
 	var envUrl = pflag.String("url-env", "", "Environment variable containing the URL to process")
 
@@ -241,6 +246,40 @@ func main() {
 		theUrl.RawQuery = *query
 	}
 
+	if len(*setParams) > 0 {
+		queryValues := theUrl.Query()
+		for _, param := range *setParams {
+			kv := strings.SplitN(param, "=", 2)
+			if kv[0] != "" {
+				queryValues.Set(kv[0], kv[1])
+			}
+		}
+		theUrl.RawQuery = queryValues.Encode()
+	}
+
+	if len(*delParams) > 0 {
+		queryValues := theUrl.Query()
+		for _, key := range *delParams {
+			queryValues.Del(key)
+		}
+		theUrl.RawQuery = queryValues.Encode()
+	}
+
+	if len(*addParams) > 0 {
+		queryValues := theUrl.Query()
+		for _, param := range *addParams {
+			kv := strings.SplitN(param, "=", 2)
+			if kv[0] != "" {
+				if len(kv) > 1 {
+					queryValues.Add(kv[0], kv[1])
+				} else {
+					queryValues.Add(kv[0], "")
+				}
+			}
+		}
+		theUrl.RawQuery = queryValues.Encode()
+	}
+
 	if *noFragment {
 		theUrl.Fragment = ""
 	} else if *fragment != "" {
@@ -249,9 +288,20 @@ func main() {
 
 	switch *output {
 	case "url":
-		fmt.Println(theUrl.String())
+		fmt.Print(theUrl.String())
 	case "scheme":
 		fmt.Print(theUrl.Scheme)
+	case "username":
+		if theUrl.User != nil {
+			fmt.Print(theUrl.User.Username())
+		}
+	case "password":
+		if theUrl.User != nil {
+			password, hasPassword := theUrl.User.Password()
+			if hasPassword {
+				fmt.Print(password)
+			}
+		}
 	case "host":
 		fmt.Print(theUrl.Hostname())
 	case "port":
@@ -268,17 +318,6 @@ func main() {
 			password, isSet := theUrl.User.Password()
 			if isSet {
 				fmt.Print(":")
-				fmt.Print(password)
-			}
-		}
-	case "username":
-		if theUrl.User != nil {
-			fmt.Print(theUrl.User.Username())
-		}
-	case "password":
-		if theUrl.User != nil {
-			password, hasPassword := theUrl.User.Password()
-			if hasPassword {
 				fmt.Print(password)
 			}
 		}

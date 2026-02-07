@@ -1,20 +1,26 @@
+# set username from args
 exec urly --username=me https://www.example.com/
 stdout 'https://me@www.example.com/'
 
-# set both username and password
+# set username from env
+env URLY_USER=envme
+exec urly --username-env=URLY_USER https://www.example.com/
+stdout 'https://envme@www.example.com/'
+
+# set both username and password from env
 env DB_PASSWORD=the-db-password
 env DB_USERNAME=who-am-i
 env DB_URL=postgres://myhosted-server.example.com/default?sslmode=disabled
 exec urly --username-env=DB_USERNAME --password-env=DB_PASSWORD --url-env=DB_URL
 stdout 'postgres://who-am-i:the-db-password@myhosted-server\.example\.com/default\?sslmode=disabled'
 
-# set just password
+# set password from env
 env DB_PASSWORD=the-db-password
 env DB_URL=postgres://who-am-i@myhosted-server.example.com/default?sslmode=disabled
-exec urly --username-env=DB_USERNAME --password-env=DB_PASSWORD --url-env=DB_URL
+exec urly --password-env=DB_PASSWORD --url-env=DB_URL
 stdout 'postgres://who-am-i:the-db-password@myhosted-server\.example\.com/default\?sslmode=disabled'
 
-# fix the scheme
+# change the scheme
 exec urly --scheme=postgresql postgres://user@server.example.com/db
 stdout 'postgresql://user@server\.example\.com/db'
 
@@ -22,6 +28,55 @@ stdout 'postgresql://user@server\.example\.com/db'
 exec urly --output=jsonl https://u:p@example.com/path/to/file.ext?param=value
 stdout '{"scheme":"https","hostname":"example\.com","host":"example\.com","port":"","path":"/path/to/file\.ext","query":"param=value","fragment":"","username":"u","password":"p","url":"https://u:p@example\.com/path/to/file\.ext\?param=value","params":{"param":\["value"\]}}'
 
+# get the scheme
+exec urly --output=scheme https://user:pswd@host.example.com/path/to/file?querykey=value#fragment
+stdout 'https'
+
+# get the username
+exec urly --output=username https://username:pswd@host.example.com/path/to/file?querykey=value#fragment
+stdout 'username'
+
+# get the password
+exec urly --output=password https://user:pswd@host.example.com/path/to/file?querykey=value#fragment
+stdout 'pswd'
+
+# get the host
+exec urly --output=host https://user:pswd@host.example.com/path/to/file?querykey=value#fragment
+stdout 'host.example.com'
+
+# get the path
+exec urly --output=path https://user:pswd@host.example.com/path/to/file?querykey=value#fragment
+stdout '/path/to/file'
+
+# get the query
+exec urly --output=query https://user:pswd@host.example.com/path/to/file?querykey=value&key2=val2#fragment
+stdout 'querykey=value&key2=val2'
+
+# get the fragment
+exec urly --output=fragment 'https://user:pswd@host.example.com/path/to/file?querykey=value&key2=val2#fraggers'
+stdout 'fraggers'
+
+# set a parameter
+exec urly --output=query --setparam p=q 'https://user:pswd@host.example.com/path/to/file?querykey=value&key2=val2'
+stdout 'key2=val2&p=q&querykey=value'
+
+# set two parameters
+exec urly --output=query --setparam p=q --setparam a=b 'https://user:pswd@host.example.com/path/to/file?querykey=value&key2=val2'
+stdout 'a=b&key2=val2&p=q&querykey=value'
+
+# set (and override one) parameters
+exec urly --output=query --setparam p=q --setparam a=b --setparam key2=val3 'https://user:pswd@host.example.com/path/to/file?querykey=value&key2=val2'
+stdout 'a=b&key2=val3&p=q&querykey=value'
+
+# add a parameter
+exec urly --output=query --addparam key2=val3 'https://user:pswd@host.example.com/path/to/file?querykey=value&key2=val2'
+stdout 'key2=val2&key2=val3&querykey=value'
+
+# set a parameter
+exec urly --setparam p=q 'https://user:pswd@host.example.com/path/to/file?querykey=value&key2=val2'
+stdout 'https://user:pswd@host.example.com/path/to/file\?key2=val2&p=q&querykey=value'
 # add a parameter
 # remove a parameter
 # remove all parameters
+#https://user:pswd@host.example.com/path/to/file?key2=val2&p=q&querykey=value
+#https://user:pswd@host.example.com/path/to/file?key2=val2&p=q&querykey=value
