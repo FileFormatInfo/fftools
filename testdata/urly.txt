@@ -36,6 +36,10 @@ stdout 'https'
 exec urly --output=username https://username:pswd@host.example.com/path/to/file?querykey=value#fragment
 stdout 'username'
 
+# get the username (via alias)
+exec urly --output=user https://username:pswd@host.example.com/path/to/file?querykey=value#fragment
+stdout 'username'
+
 # get the password
 exec urly --output=password https://user:pswd@host.example.com/path/to/file?querykey=value#fragment
 stdout 'pswd'
@@ -55,6 +59,18 @@ stdout 'querykey=value&key2=val2'
 # get the fragment
 exec urly --output=fragment 'https://user:pswd@host.example.com/path/to/file?querykey=value&key2=val2#fraggers'
 stdout 'fraggers'
+
+# set the username
+exec urly --output=url --username=newuser 'https://olduser:pswd@host.example.com/path/to/file'
+stdout 'https://newuser:pswd@host.example.com/path/to/file'
+
+# set the username (no password)
+exec urly --output=url --username=newuser 'https://olduser@host.example.com/path/to/file'
+stdout 'https://newuser@host.example.com/path/to/file'
+
+# set the username (via alias)
+exec urly --output=url --user=newuser 'https://olduser@host.example.com/path/to/file'
+stdout 'https://newuser@host.example.com/path/to/file'
 
 # set a parameter
 exec urly --output=query --setparam p=q 'https://user:pswd@host.example.com/path/to/file?querykey=value&key2=val2'

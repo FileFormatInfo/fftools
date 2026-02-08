@@ -7,8 +7,14 @@ import (
 	"os"
 	"strings"
 
-	"github.com/FileFormatInfo/fftools/internal"
 	"github.com/spf13/pflag"
+)
+
+var (
+	BUILDER = "unknown"
+	COMMIT  = "(local)"
+	LASTMOD = "(local)"
+	VERSION = "internal"
 )
 
 func setUserName(userInfo *url.Userinfo, username string) *url.Userinfo {
@@ -86,6 +92,15 @@ func toJson(theUrl *url.URL, pretty bool) string {
 	return string(jsonStr)
 }
 
+func aliasFunc(f *pflag.FlagSet, name string) pflag.NormalizedName {
+	switch name {
+	case "user":
+		name = "username"
+		break
+	}
+	return pflag.NormalizedName(name)
+}
+
 // Detailed help text
 var helpText = `urly: A URL parsing and processing tool.`
 
@@ -119,16 +134,17 @@ func main() {
 
 	var envUrl = pflag.String("url-env", "", "Environment variable containing the URL to process")
 
-	var output = pflag.String("output", "url", "Output type: url, scheme, host, port, path, query, fragment, userinfo, username, password")
+	var output = pflag.String("output", "url", "Output type: url, scheme, host, port, path, query, fragment, userinfo, username, password, segments, segment[N]")
 	var newline = pflag.Bool("newline", false, "Append newline to output")
 
 	var help = pflag.Bool("help", false, "Detailed help")
 	var version = pflag.Bool("version", false, "Version info")
 
+	pflag.CommandLine.SetNormalizeFunc(aliasFunc)
 	pflag.Parse()
 
 	if *version {
-		internal.PrintVersion("urly")
+		fmt.Printf("urly version %s (built on %s from %s by %s)\n", VERSION, LASTMOD, COMMIT, BUILDER)
 		return
 	}
 
@@ -291,7 +307,7 @@ func main() {
 		fmt.Print(theUrl.String())
 	case "scheme":
 		fmt.Print(theUrl.Scheme)
-	case "username":
+	case "username", "user":
 		if theUrl.User != nil {
 			fmt.Print(theUrl.User.Username())
 		}
@@ -325,9 +341,27 @@ func main() {
 		fmt.Print(toJson(theUrl, true))
 	case "jsonl":
 		fmt.Print(toJson(theUrl, false))
+	case "segments":
+		fmt.Print(theUrl.Path[1:]) // remove leading slash
 	default:
-		fmt.Fprintf(os.Stderr, "ERROR: Unknown output type: %s\n", *output)
-		os.Exit(1)
+		if strings.HasPrefix(*output, "segment[") && strings.HasSuffix(*output, "]") {
+			indexStr := (*output)[len("segment[") : len(*output)-1]
+			var index int
+			_, err := fmt.Sscanf(indexStr, "%d", &index)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "ERROR: Invalid segment index: %s\n", indexStr)
+				os.Exit(1)
+			}
+			segments := strings.Split(theUrl.Path, "/")
+			if index < 0 || index >= len(segments) {
+				fmt.Fprintf(os.Stderr, "ERROR: Segment index out of range: %d\n", index)
+				os.Exit(1)
+			}
+			fmt.Print(segments[index])
+		} else {
+			fmt.Fprintf(os.Stderr, "ERROR: Unknown output type: %s\n", *output)
+			os.Exit(1)
+		}
 	}
 	if *newline {
 		fmt.Println()
