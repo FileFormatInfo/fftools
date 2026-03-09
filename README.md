@@ -1,22 +1,25 @@
 # File Format Tools [<img alt="Logo for fftools" src="docs/favicon.svg" height="96" align="right"/>](https://www.fileformat.info/)
 
 [![build](https://github.com/FileFormatInfo/fftools/actions/workflows/build.yaml/badge.svg)](https://github.com/FileFormatInfo/fftools/actions/workflows/build.yaml)
-
+[![release](https://github.com/FileFormatInfo/fftools/actions/workflows/release.yaml/badge.svg)](https://github.com/FileFormatInfo/fftools/actions/workflows/release.yaml)
 
 ## Programs
 
-- `asciify`: converts to ASCII using [anyascii](https://github.com/anyascii/anyascii)
-- `asciitable`: prints out an table of ASCII characters
-- `bytecount`: counts the number of occurrences of each byte
-- `certinfo`: print info about an x509 (aka SSL/HTTPS) certificate
-- `hexdumpc`: generate canonical hexdump (`hexdump -C`) output in case you don't have [`hexdump`](https://man7.org/linux/man-pages/man1/hexdump.1.html) installed
-- `unicount`: count Unicode codepoints in a file
-- `uniwhat`: print the names of each Unicode character in a file
+- [asciify](cmd/asciify/README.md): converts to ASCII using [anyascii](https://github.com/anyascii/anyascii)
+- [asciitable](cmd/asciitable/README.md): prints out an table of ASCII characters
+- [bytecount](cmd/bytecount/README.md): counts the number of occurrences of each byte
+- [certinfo](cmd/certinfo/README.md): print info about an x509 (aka SSL/HTTPS) certificate
+- [ghash](cmd/ghash/README.md): calculate file hashes
+- [hexdumpc](cmd/hexdumpc/README.md): generate canonical hexdump (`hexdump -C`) output in case you don't have  [hexdump`]
+(https://man7.org/linux/man-pages/man1/hexdump.1.html) installed
+- [unhexdump](cmd/unhexdump/README.md): convert `hexdump -c` output back into binary
+- [unicount](cmd/unicount/README.md): count Unicode codepoints in a file
+- [uniwhat](cmd/uniwhat/README.md): print the names of each Unicode character in a file
+- [urly](cmd/urly/README.md): manipulate URLs
 
 ## Experiments
 
 - `wombat` - tests terminal screen functions
-- `spinner` - terminal spinner for long-running tasks
 
 ## Credits
 
@@ -25,15 +28,16 @@
 [![golang](https://www.vectorlogo.zone/logos/golang/golang-ar21.svg)](https://golang.org/ "Programming language")
 [![svgrepo](https://www.vectorlogo.zone/logos/svgrepo/svgrepo-ar21.svg)](https://www.svgrepo.com/svg/276165/gardening-tools-rake "Icon")
 
-## Scripts To Do
+* [goreleaser](https://goreleaser.com/)
 
-- [ ] `ghash`: calculate various [hashes available in the Go standard library](https://pkg.go.dev/crypto#Hash)
+## To Do
+
 - [ ] `body`: prints specific lines of a file (in between `head` and `tail`)
+- [hosty](cmd/hosty/README.md): manipulate hostnames
 - [ ] `trilobyte`: translates bytes according to a map
 - [ ] `trune`: translates Unicode codepoints (runes) according to a map
 - [ ] `ustrings`: like the standard [`strings`](https://man7.org/linux/man-pages/man1/strings.1.html) utility, but with Unicode support
 - [ ] `utf8ify`: convert to UTF-8
-- [ ] `unhexdump`: convert the (edited) output of [`hexdump -C`](https://man7.org/linux/man-pages/man1/hexdump.1.html) back to binary
 
 
 ## General
