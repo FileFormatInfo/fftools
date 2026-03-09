@@ -19,17 +19,28 @@ if [ ! -d "${DIST_DIR}" ]; then
 	mkdir "${REPO_DIR}/dist"
 fi
 
-FILES=$(ls "${REPO_DIR}/cmd")
+CLEAN=1
+FILES=("$@")
+if [ ${#FILES[@]} -eq 0 ]; then
+	echo "INFO: no files specified, building all files in ${REPO_DIR}/cmd"
+	CLEAN=0
+	FILES=($(ls "${REPO_DIR}/cmd"))
+fi
 LASTMOD=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 COMMIT=$(git rev-parse --short HEAD)
 if [[ $(git diff --stat) != '' ]]; then
 	COMMIT="${COMMIT}-dirty"
 fi
 
-for f in $FILES; do
+for f in "${FILES[@]}"; do
 	if [ -f "${DIST_DIR}/${f}" ]; then
-		echo "WARNING: file ${DIST_DIR}/${f} already exists"
-		continue
+		if [ ${CLEAN} -eq 1 ]; then
+			echo "INFO: removing existing file ${DIST_DIR}/${f}"
+			rm "${DIST_DIR}/${f}"
+		else
+			echo "WARNING: file ${DIST_DIR}/${f} already exists"
+			continue
+		fi
 	fi
 	echo "INFO: compiling ${f} to dist directory"
 	go build \

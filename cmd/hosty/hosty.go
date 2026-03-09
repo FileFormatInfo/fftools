@@ -1,0 +1,4 @@
+package hosty
+
+func main() {
+}

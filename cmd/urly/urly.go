@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -16,6 +17,9 @@ var (
 	LASTMOD = "(local)"
 	VERSION = "internal"
 )
+
+//go:embed README.md
+var helpText string
 
 func setUserName(userInfo *url.Userinfo, username string) *url.Userinfo {
 	if userInfo != nil {
@@ -101,9 +105,6 @@ func aliasFunc(f *pflag.FlagSet, name string) pflag.NormalizedName {
 	return pflag.NormalizedName(name)
 }
 
-// Detailed help text
-var helpText = `urly: A URL parsing and processing tool.`
-
 func main() {
 
 	var scheme = pflag.String("scheme", "", "Set the URL scheme")
@@ -151,8 +152,7 @@ func main() {
 	if *help {
 		fmt.Println("urly - manipulate URLs")
 		pflag.PrintDefaults()
-		fmt.Println()
-		fmt.Println("Use `man urly` for detailed help.")
+		fmt.Printf("%s\n", helpText)
 		return
 	}
 

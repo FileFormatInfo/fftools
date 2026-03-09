@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	. "github.com/FileFormatInfo/fftools/internal"
+	"github.com/spf13/pflag"
 )
 
 var (
@@ -15,6 +17,15 @@ var (
 )
 
 func main() {
+
+	var version = pflag.Bool("version", false, "Version info")
+
+	pflag.Parse()
+
+	if *version {
+		fmt.Fprintf(os.Stdout, "wombat version %s (built by %s on %s, commit %s)\n", VERSION, BUILDER, LASTMOD, COMMIT)
+		return
+	}
 
 	oldState := Init()
 	defer Deinit(oldState)
