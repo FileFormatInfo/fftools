@@ -6,10 +6,12 @@ toolchain go1.24.2
 
 require (
 	github.com/anyascii/go v0.3.2
+	github.com/mattn/go-isatty v0.0.20
 	github.com/olekukonko/tablewriter v1.0.7
 	github.com/rogpeppe/go-internal v1.14.1
 	github.com/spf13/pflag v1.0.6
 	golang.org/x/crypto v0.38.0
+	golang.org/x/net v0.40.0
 	golang.org/x/term v0.36.0
 	golang.org/x/text v0.26.0
 )
@@ -17,7 +19,6 @@ require (
 require (
 	github.com/fatih/color v1.15.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/olekukonko/errors v0.0.0-20250405072817-4e6d85265da6 // indirect
 	github.com/olekukonko/ll v0.0.8 // indirect

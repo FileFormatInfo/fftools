@@ -227,17 +227,14 @@ homebrew_casks:
     # manpages:
     # completions:
     directory: Casks
-    skip_upload: true
-    commit_author:
-      name: Andrew Marcuse
-      email: fileformat@gmail.com
+    skip_upload: false
     description: "Utilities for analyzing, viewing and fixing file formats."
     homepage: "https://tools.fileformat.info/"
     license: "GPL-3.0-or-later"
     repository:
       owner: FileFormatInfo
-      name: fftools-tap
-      # token:
+      name: homebrew-tap
+      token: ${{ secrets.HOMEBREW_TOKEN }}
 
 nfpms:
   - id: fftools

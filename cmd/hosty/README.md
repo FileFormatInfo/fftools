@@ -2,6 +2,8 @@
 
 Manipulate host/domain names on the command line
 
+## Actions
+
 * convert to/from punycode
 * get the public suffix
 * get the public suffix + 1
@@ -12,6 +14,8 @@ Manipulate host/domain names on the command line
 * make sure a hostname resolves
 * make sure the TLD is valid
 * make sure the public suffix is valid
+
+## Notes
 
 * Handle trailing dot
 * Max label size is 63
