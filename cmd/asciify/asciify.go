@@ -1,10 +1,12 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"os"
 
 	anyascii "github.com/anyascii/go"
+	"github.com/spf13/pflag"
 	"golang.org/x/text/encoding/charmap"
 )
 
@@ -15,7 +17,26 @@ var (
 	VERSION = "internal"
 )
 
+//go:embed README.md
+var helpText string
+
 func main() {
+
+	var help = pflag.BoolP("help", "h", false, "Show help message")
+	var version = pflag.Bool("version", false, "Print version information")
+
+	pflag.Parse()
+
+	if *version {
+		fmt.Fprintf(os.Stdout, "asciify version %s (built by %s on %s, commit %s)\n", VERSION, BUILDER, LASTMOD, COMMIT)
+		return
+	}
+
+	if *help {
+		fmt.Printf("Usage: asciify [options] [file...]\n\n")
+		fmt.Printf("%s\n", helpText)
+		return
+	}
 
 	input, err := os.ReadFile("/dev/stdin")
 	if err != nil {

@@ -1,12 +1,14 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/olekukonko/tablewriter/renderer"
 	"github.com/olekukonko/tablewriter/tw"
+	"github.com/spf13/pflag"
 	"golang.org/x/text/encoding/charmap"
 )
 
@@ -16,6 +18,9 @@ var (
 	LASTMOD = "(local)"
 	VERSION = "internal"
 )
+
+//go:embed README.md
+var helpText string
 
 var asciiMap = map[int]string{
 	0x00: "NUL", 0x01: "SOH", 0x02: "STX", 0x03: "ETX",
@@ -29,6 +34,22 @@ var asciiMap = map[int]string{
 	0x7F: "DEL"}
 
 func main() {
+
+	var help = pflag.BoolP("help", "h", false, "Show help message")
+	var version = pflag.Bool("version", false, "Print version information")
+
+	pflag.Parse()
+
+	if *version {
+		fmt.Fprintf(os.Stdout, "asciitable version %s (built by %s on %s, commit %s)\n", VERSION, BUILDER, LASTMOD, COMMIT)
+		return
+	}
+
+	if *help {
+		fmt.Printf("Usage: asciitable\n\n")
+		fmt.Printf("%s\n", helpText)
+		return
+	}
 
 	// LATER: option to output markdown or pure ASCII (i.e. not using box-drawing characters)
 	table := tablewriter.NewTable(os.Stdout,

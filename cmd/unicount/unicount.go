@@ -2,12 +2,14 @@ package main
 
 import (
 	"bufio"
+	_ "embed"
 	"fmt"
 	"io"
 	"log"
 	"os"
 	"sort"
 
+	"github.com/mattn/go-isatty"
 	"github.com/spf13/pflag"
 	"golang.org/x/text/unicode/runenames"
 )
@@ -19,6 +21,9 @@ var (
 	VERSION = "internal"
 )
 
+//go:embed README.md
+var helpText string
+
 func main() {
 
 	var control = pflag.Bool("control", false, "Include control characters")
@@ -27,10 +32,31 @@ func main() {
 	var char = pflag.Bool("char", false, "Print the character itself")
 	var uname = pflag.Bool("name", true, "Print the unicode character name")
 
+	var help = pflag.Bool("help", false, "Detailed help")
+	var version = pflag.Bool("version", false, "Version info")
+
 	pflag.Parse()
+
+	if *version {
+		fmt.Printf("unicount version %s (built on %s from %s by %s)\n", VERSION, LASTMOD, COMMIT, BUILDER)
+		return
+	}
+
+	if *help {
+		fmt.Println("unicount - count unicode characters")
+		pflag.PrintDefaults()
+		fmt.Printf("%s\n", helpText)
+		return
+	}
 
 	args := pflag.Args()
 	if len(args) == 0 {
+		if !isatty.IsTerminal(os.Stdin.Fd()) {
+			fmt.Fprintf(os.Stderr, "ERROR: no files specified and stdin is not piped\n\n")
+			fmt.Printf("Usage: unicount [options] file ...\n\n")
+			pflag.PrintDefaults()
+			os.Exit(1)
+		}
 		args = []string{"-"}
 	}
 
@@ -70,7 +96,7 @@ func main() {
 	}
 
 	keys := make([]rune, 0, len(runeCounts))
-	for k, _ := range runeCounts {
+	for k := range runeCounts {
 		keys = append(keys, k)
 	}
 	sort.Slice(keys, func(i, j int) bool {

@@ -2,10 +2,12 @@ package main
 
 import (
 	"bufio"
+	_ "embed"
 	"fmt"
 	"io"
 	"os"
 
+	"github.com/mattn/go-isatty"
 	"github.com/olekukonko/tablewriter"
 	"github.com/olekukonko/tablewriter/renderer"
 	"github.com/olekukonko/tablewriter/tw"
@@ -20,6 +22,9 @@ var (
 	LASTMOD = "(local)"
 	VERSION = "internal"
 )
+
+//go:embed README.md
+var helpText string
 
 func outputPretty(out io.Writer, counts map[byte]int) {
 
@@ -103,17 +108,20 @@ func main() {
 	}
 
 	if *help {
-		// LATER: print man page
 		fmt.Printf("Usage: bytecount [options] [file...]\n\n")
 		fmt.Printf("Options:\n")
 		pflag.PrintDefaults()
+		fmt.Printf("%s\n", helpText)
 		return
 	}
 
 	args := pflag.Args()
 	if len(args) == 0 {
-		fmt.Printf("Usage: bytecount [options] file ...\n\n")
-		return
+		if !isatty.IsTerminal(os.Stdin.Fd()) {
+			fmt.Printf("No input files specified and no data piped to stdin.\n\n")
+			os.Exit(1)
+		}
+		args = append(args, "-")
 	}
 
 	for _, arg := range args {

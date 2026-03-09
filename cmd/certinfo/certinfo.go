@@ -4,11 +4,14 @@ import (
 	"bytes"
 	"crypto/tls"
 	"crypto/x509"
+	_ "embed"
 	"encoding/pem"
 	"fmt"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/spf13/pflag"
 )
 
 var (
@@ -18,13 +21,8 @@ var (
 	VERSION = "internal"
 )
 
-func usage() {
-	fmt.Fprintf(os.Stderr, "Usage: certinfo url|file\n")
-	fmt.Fprintf(os.Stderr, "Examples:\n")
-	fmt.Fprintf(os.Stderr, "          certinfo https://google.com\n")
-	fmt.Fprintf(os.Stderr, "          certinfo mycert.pem\n")
-	os.Exit(1)
-}
+//go:embed README.md
+var helpText string
 
 func getHttpsCerts(url string) ([]*x509.Certificate, error) {
 
@@ -51,13 +49,32 @@ func getHttpsCerts(url string) ([]*x509.Certificate, error) {
 
 func main() {
 
-	if len(os.Args) < 2 {
-		usage()
+	var help = pflag.BoolP("help", "h", false, "Show help message")
+	var version = pflag.Bool("version", false, "Print version information")
+
+	pflag.Parse()
+
+	if *version {
+		fmt.Fprintf(os.Stdout, "certinfo version %s (built by %s on %s, commit %s)\n", VERSION, BUILDER, LASTMOD, COMMIT)
+		return
+	}
+
+	if *help {
+		fmt.Printf("Usage: certinfo [options] file ...\n\n")
+		fmt.Printf("Options:\n")
+		pflag.PrintDefaults()
+		fmt.Printf("%s\n", helpText)
+		return
+	}
+
+	if len(pflag.Args()) < 1 {
+		fmt.Fprintf(os.Stderr, "Usage: certinfo [options] file|url ...\n")
+		os.Exit(1)
 	}
 
 	var certs []*x509.Certificate
 
-	for _, arg := range os.Args[1:] {
+	for _, arg := range pflag.Args() {
 		if strings.HasPrefix(arg, "https://") {
 			httpsCerts, httpsErr := getHttpsCerts(arg)
 			if httpsErr != nil {

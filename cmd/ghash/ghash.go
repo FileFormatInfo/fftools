@@ -8,6 +8,7 @@ import (
 	_ "crypto/sha256"
 	_ "crypto/sha3"
 	_ "crypto/sha512"
+	_ "embed"
 	"hash"
 	"io"
 	"regexp"
@@ -30,6 +31,9 @@ var (
 	LASTMOD = "(local)"
 	VERSION = "internal"
 )
+
+//go:embed README.md
+var helpText string
 
 // struct with name and hash
 type Hasher struct {
@@ -88,7 +92,23 @@ func main() {
 	pflag.BoolVar(&list, "list", false, "List available hash algorithms")
 	//LATER: output format
 
+	var help = pflag.BoolP("help", "h", false, "Show help message")
+	var version = pflag.Bool("version", false, "Print version information")
+
 	pflag.Parse()
+
+	if *version {
+		fmt.Fprintf(os.Stdout, "ghash version %s (built by %s on %s, commit %s)\n", VERSION, BUILDER, LASTMOD, COMMIT)
+		return
+	}
+
+	if *help {
+		fmt.Printf("Usage: ghash [options] file ...\n\n")
+		fmt.Printf("Options:\n")
+		pflag.PrintDefaults()
+		fmt.Printf("%s\n", helpText)
+		return
+	}
 
 	if list {
 		for i := crypto.MD4; i <= crypto.BLAKE2b_512; i++ {

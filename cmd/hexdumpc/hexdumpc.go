@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	_ "embed"
 	"fmt"
 	"io"
 	"os"
@@ -15,6 +16,9 @@ var (
 	LASTMOD = "(local)"
 	VERSION = "internal"
 )
+
+//go:embed README.md
+var helpText string
 
 func hexdump(fileName string, offset, length int64, w io.Writer) error {
 
@@ -97,7 +101,23 @@ func main() {
 	var length = pflag.Int64("length", 0, "number of bytes to read from the file")
 	//LATER: support for tail
 
+	var help = pflag.BoolP("help", "h", false, "Show help message")
+	var version = pflag.Bool("version", false, "Print version information")
+
 	pflag.Parse()
+
+	if *version {
+		fmt.Fprintf(os.Stdout, "hexdumpc version %s (built by %s on %s, commit %s)\n", VERSION, BUILDER, LASTMOD, COMMIT)
+		return
+	}
+
+	if *help {
+		fmt.Printf("Usage: hexdumpc [options] file ...\n\n")
+		fmt.Printf("Options:\n")
+		pflag.PrintDefaults()
+		fmt.Printf("%s\n", helpText)
+		return
+	}
 
 	if *head > 0 {
 		*offset = 0
