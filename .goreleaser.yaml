@@ -5,7 +5,6 @@ project_name: fftools
 before:
   hooks:
     - go mod tidy
-    - ./bin/gen_manpages.sh
 
 builds:
   - id: asciify
@@ -17,6 +16,13 @@ builds:
       - linux
       - windows
       - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X VERSION={{.Version}}
+      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
 
   - id: asciitable
     main: ./cmd/asciitable/asciitable.go
@@ -27,6 +33,13 @@ builds:
       - linux
       - windows
       - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X VERSION={{.Version}}
+      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
 
   - id: bytecount
     main: ./cmd/bytecount/bytecount.go
@@ -37,6 +50,13 @@ builds:
       - linux
       - windows
       - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X VERSION={{.Version}}
+      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
 
   - id: certinfo
     main: ./cmd/certinfo/certinfo.go
@@ -47,6 +67,30 @@ builds:
       - linux
       - windows
       - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X VERSION={{.Version}}
+      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
+
+  - id: ghash
+    main: ./cmd/ghash/ghash.go
+    binary: ghash
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X VERSION={{.Version}}
+      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
 
   - id: hexdumpc
     main: ./cmd/hexdumpc/hexdumpc.go
@@ -57,6 +101,47 @@ builds:
       - linux
       - windows
       - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X main.VERSION={{.Version}}
+      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
+
+  - id: hosty
+    main: ./cmd/hosty/hosty.go
+    binary: hosty
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X main.VERSION={{.Version}}
+      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
+
+  - id: unhexdump
+    main: ./cmd/unhexdump/unhexdump.go
+    binary: unhexdump
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X main.VERSION={{.Version}}
+      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
 
   - id: unicount
     main: ./cmd/unicount/unicount.go
@@ -67,6 +152,13 @@ builds:
       - linux
       - windows
       - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X main.VERSION={{.Version}}
+      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
 
   - id: uniwhat
     main: ./cmd/uniwhat/uniwhat.go
@@ -80,10 +172,27 @@ builds:
     ldflags:
       - -s
       - -w
-      - -X github.com/FileFormatInfo/fftools/internal.VERSION={{.Version}}
-      - -X github.com/FileFormatInfo/fftools/internal.LASTMOD={{.Timestamp}}
-      - -X github.com/FileFormatInfo/fftools/internal.COMMIT={{.ShortCommit}}
-      - -X github.com/FileFormatInfo/fftools/internal.BUILDER=goreleaser
+      - -X main.VERSION={{.Version}}
+      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
+
+  - id: urly
+    main: ./cmd/urly/urly.go
+    binary: urly
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X main.VERSION={{.Version}}
+      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
 
 archives:
   - formats: [tar.gz]
@@ -99,9 +208,7 @@ archives:
     format_overrides:
       - goos: windows
         formats: [zip]
-  #- files:
-  #  - LICENSE.txt
-  #  - manpages/*
+
 
 homebrew_casks:
   - name: fftools
@@ -110,12 +217,16 @@ homebrew_casks:
       - asciitable
       - bytecount
       - certinfo
+      - ghash
       - hexdumpc
+      - hosty
+      - unhexdump
       - unicount
       - uniwhat
+      - urly
     # manpages:
     # completions:
-    directory: pkg/cask
+    directory: Casks
     skip_upload: true
     commit_author:
       name: Andrew Marcuse
@@ -140,13 +251,6 @@ nfpms:
     formats:
       - deb
       - rpm
-#  - contents:
-#      - src: ./manpages/
-#        dst: /usr/share/man/man1/
-#        type: dir
-#        file_info:
-#          mode: 0644
-
 
 report_sizes: true
 
@@ -154,8 +258,8 @@ report_sizes: true
 #  enabled: true
 #  name_template: "{{ .ProjectName }}.src"
 
-#upx:
-#  - enabled: true
+upx:
+  - enabled: true
 
 #changelog:
 #  sort: asc
