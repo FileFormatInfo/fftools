@@ -8,6 +8,13 @@ import (
 	"golang.org/x/text/encoding/charmap"
 )
 
+var (
+	BUILDER = "unknown"
+	COMMIT  = "(local)"
+	LASTMOD = "(local)"
+	VERSION = "internal"
+)
+
 func main() {
 
 	input, err := os.ReadFile("/dev/stdin")

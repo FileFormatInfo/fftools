@@ -7,6 +7,13 @@ import (
 	. "github.com/FileFormatInfo/fftools/internal"
 )
 
+var (
+	BUILDER = "unknown"
+	COMMIT  = "(local)"
+	LASTMOD = "(local)"
+	VERSION = "internal"
+)
+
 func main() {
 
 	oldState := Init()

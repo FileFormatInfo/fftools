@@ -9,6 +9,13 @@ import (
 	"github.com/spf13/pflag"
 )
 
+var (
+	BUILDER = "unknown"
+	COMMIT  = "(local)"
+	LASTMOD = "(local)"
+	VERSION = "internal"
+)
+
 func hexdump(fileName string, offset, length int64, w io.Writer) error {
 
 	// Open the file

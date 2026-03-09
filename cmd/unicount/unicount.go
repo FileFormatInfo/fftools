@@ -12,6 +12,13 @@ import (
 	"golang.org/x/text/unicode/runenames"
 )
 
+var (
+	BUILDER = "unknown"
+	COMMIT  = "(local)"
+	LASTMOD = "(local)"
+	VERSION = "internal"
+)
+
 func main() {
 
 	var control = pflag.Bool("control", false, "Include control characters")

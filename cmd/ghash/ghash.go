@@ -24,6 +24,13 @@ import (
 	"github.com/spf13/pflag"
 )
 
+var (
+	BUILDER = "unknown"
+	COMMIT  = "(local)"
+	LASTMOD = "(local)"
+	VERSION = "internal"
+)
+
 // struct with name and hash
 type Hasher struct {
 	name string

@@ -8,6 +8,13 @@ import (
 )
 
 var (
+	BUILDER = "unknown"
+	COMMIT  = "(local)"
+	LASTMOD = "(local)"
+	VERSION = "internal"
+)
+
+var (
 	solid  = [...]string{"\u2022", "\u23FA", "\u25CF", "\u2B24"}
 	hollow = [...]string{"\u25E6", "\uFFEE", "\u25CB", "\u25EF", "\u2B58"}
 )

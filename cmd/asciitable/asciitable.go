@@ -10,6 +10,13 @@ import (
 	"golang.org/x/text/encoding/charmap"
 )
 
+var (
+	BUILDER = "unknown"
+	COMMIT  = "(local)"
+	LASTMOD = "(local)"
+	VERSION = "internal"
+)
+
 var asciiMap = map[int]string{
 	0x00: "NUL", 0x01: "SOH", 0x02: "STX", 0x03: "ETX",
 	0x04: "EOT", 0x05: "ENQ", 0x06: "ACK", 0x07: "BEL",

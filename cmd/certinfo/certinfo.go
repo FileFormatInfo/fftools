@@ -11,6 +11,13 @@ import (
 	"strings"
 )
 
+var (
+	BUILDER = "unknown"
+	COMMIT  = "(local)"
+	LASTMOD = "(local)"
+	VERSION = "internal"
+)
+
 func usage() {
 	fmt.Fprintf(os.Stderr, "Usage: certinfo url|file\n")
 	fmt.Fprintf(os.Stderr, "Examples:\n")

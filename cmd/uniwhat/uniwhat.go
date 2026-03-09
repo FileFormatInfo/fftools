@@ -8,9 +8,15 @@ import (
 	"log"
 	"os"
 
-	"github.com/FileFormatInfo/fftools/internal"
 	"github.com/spf13/pflag"
 	"golang.org/x/text/unicode/runenames"
+)
+
+var (
+	BUILDER = "unknown"
+	COMMIT  = "(local)"
+	LASTMOD = "(local)"
+	VERSION = "internal"
 )
 
 //go:embed README.md
@@ -32,7 +38,7 @@ func main() {
 	pflag.Parse()
 
 	if *version {
-		internal.PrintVersion("uniwhat")
+		fmt.Fprintf(os.Stdout, "uniwhat version %s (built by %s on %s, commit %s)\n", VERSION, BUILDER, LASTMOD, COMMIT)
 		return
 	}
 

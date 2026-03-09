@@ -10,6 +10,13 @@ import (
 	"strings"
 )
 
+var (
+	BUILDER = "unknown"
+	COMMIT  = "(local)"
+	LASTMOD = "(local)"
+	VERSION = "internal"
+)
+
 var linePattern = regexp.MustCompile(`^.*[|]([ 0-9a-fA-F]+)[|].*$`)
 
 func parseLine(line string, dst *os.File) error {

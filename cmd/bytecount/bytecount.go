@@ -6,13 +6,19 @@ import (
 	"io"
 	"os"
 
-	"github.com/FileFormatInfo/fftools/internal"
 	"github.com/olekukonko/tablewriter"
 	"github.com/olekukonko/tablewriter/renderer"
 	"github.com/olekukonko/tablewriter/tw"
 	"github.com/spf13/pflag"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
+)
+
+var (
+	BUILDER = "unknown"
+	COMMIT  = "(local)"
+	LASTMOD = "(local)"
+	VERSION = "internal"
 )
 
 func outputPretty(out io.Writer, counts map[byte]int) {
@@ -92,7 +98,7 @@ func main() {
 	pflag.Parse()
 
 	if *version {
-		internal.PrintVersion("bytecount")
+		fmt.Fprintf(os.Stdout, "bytecount version %s (built by %s on %s, commit %s)\n", VERSION, BUILDER, LASTMOD, COMMIT)
 		return
 	}
 
