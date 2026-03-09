@@ -44,7 +44,7 @@ for f in "${FILES[@]}"; do
 	fi
 	echo "INFO: compiling ${f} to dist directory"
 	go build \
-		-ldflags "-s -w -X github.com/FileFormatInfo/fftools/internal.LASTMOD=${LASTMOD} -X github.com/FileFormatInfo/fftools/internal.COMMIT=${COMMIT} -X github.com/FileFormatInfo/fftools/internal.BUILDER=build.sh" \
+		-ldflags "-s -w -X main.LASTMOD=${LASTMOD} -X main.COMMIT=${COMMIT} -X main.BUILDER=build.sh -X main.VERSION=localdev" \
 		-o "${DIST_DIR}/${f}" \
 		"${REPO_DIR}/cmd/${f}"
 done
