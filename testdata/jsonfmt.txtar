@@ -10,6 +10,10 @@ stdout '(?s)^\{\n  "a": 1,\n  "b": \{\n    "x": 2,\n    "y": 1\n  \},\n  "z": 3\
 exec jsonfmt --line --sort-keys jsonfmt_input_case.json
 stdout '^\{"A":2,"a":3,"B":4,"b":1\}$'
 
+# fractured option passthrough
+exec jsonfmt --fractured-always-expand-depth=0 --fractured-indent-spaces=2 jsonfmt_input_nested.json
+stdout '(?s)^\{\n  "x": \{"a": 1\}\n\}$'
+
 # trailing newline and CRLF mode
 exec jsonfmt --line --trailing-newline --eol=crlf jsonfmt_input_array.json
 stdout '^\[\{"n":2,"s":"b"\},\{"n":1,"s":"a"\}\]\r\n$'
@@ -29,3 +33,6 @@ stderr 'use at most one of --canonical, --line, --fractured'
 
 -- jsonfmt_input_case.json --
 {"b":1,"A":2,"a":3,"B":4}
+
+-- jsonfmt_input_nested.json --
+{"x":{"a":1}}

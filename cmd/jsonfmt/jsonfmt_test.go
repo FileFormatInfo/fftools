@@ -3,6 +3,8 @@ package main
 import (
 	"strings"
 	"testing"
+
+	fracturedjson "github.com/FileFormatInfo/go-fractured-json"
 )
 
 func TestResolveModes(t *testing.T) {
@@ -52,7 +54,7 @@ func TestApplyEOL(t *testing.T) {
 }
 
 func TestFormatJSONLine(t *testing.T) {
-	out, err := formatJSON([]byte("{\n  \"b\": 2,\n  \"a\": 1\n}\n"), false, true, false, false)
+	out, err := formatJSON([]byte("{\n  \"b\": 2,\n  \"a\": 1\n}\n"), false, true, false, false, fracturedjson.RecommendedOptions())
 	if err != nil {
 		t.Fatalf("formatJSON line error: %v", err)
 	}
@@ -62,7 +64,7 @@ func TestFormatJSONLine(t *testing.T) {
 }
 
 func TestFormatJSONCanonicalSortsKeys(t *testing.T) {
-	out, err := formatJSON([]byte("{\"b\":2,\"a\":1}"), true, false, false, false)
+	out, err := formatJSON([]byte("{\"b\":2,\"a\":1}"), true, false, false, false, fracturedjson.RecommendedOptions())
 	if err != nil {
 		t.Fatalf("formatJSON canonical error: %v", err)
 	}
@@ -75,7 +77,7 @@ func TestFormatJSONCanonicalSortsKeys(t *testing.T) {
 }
 
 func TestFormatJSONExpanded(t *testing.T) {
-	out, err := formatJSON([]byte("{\"k\":\"v\"}"), false, false, false, false)
+	out, err := formatJSON([]byte("{\"k\":\"v\"}"), false, false, false, false, fracturedjson.RecommendedOptions())
 	if err != nil {
 		t.Fatalf("formatJSON expanded error: %v", err)
 	}
@@ -85,7 +87,7 @@ func TestFormatJSONExpanded(t *testing.T) {
 }
 
 func TestFormatJSONFractured(t *testing.T) {
-	out, err := formatJSON([]byte("{\"a\":1,\"b\":2}"), false, false, true, false)
+	out, err := formatJSON([]byte("{\"a\":1,\"b\":2}"), false, false, true, false, fracturedjson.RecommendedOptions())
 	if err != nil {
 		t.Fatalf("formatJSON fractured error: %v", err)
 	}
@@ -95,11 +97,59 @@ func TestFormatJSONFractured(t *testing.T) {
 }
 
 func TestFormatJSONLineSortKeysCaseInsensitive(t *testing.T) {
-	out, err := formatJSON([]byte("{\"b\":1,\"A\":2,\"a\":3,\"B\":4}"), false, true, false, true)
+	out, err := formatJSON([]byte("{\"b\":1,\"A\":2,\"a\":3,\"B\":4}"), false, true, false, true, fracturedjson.RecommendedOptions())
 	if err != nil {
 		t.Fatalf("formatJSON line sort-keys error: %v", err)
 	}
 	if out != "{\"A\":2,\"a\":3,\"B\":4,\"b\":1}" {
 		t.Fatalf("line sort-keys output = %q", out)
+	}
+}
+
+func TestBuildFracturedOptions(t *testing.T) {
+	opts, err := buildFracturedOptions(fracturedFlagValues{
+		jsonEolStyle:               "lf",
+		maxTotalLineLength:         80,
+		maxInlineComplexity:        1,
+		maxCompactArrayComplexity:  1,
+		maxTableRowComplexity:      1,
+		maxPropNamePadding:         8,
+		colonBeforePropNamePadding: true,
+		tableCommaPlacement:        "after-padding",
+		minCompactArrayRowItems:    2,
+		alwaysExpandDepth:          0,
+		nestedBracketPadding:       false,
+		simpleBracketPadding:       true,
+		colonPadding:               false,
+		commaPadding:               false,
+		commentPadding:             false,
+		numberListAlignment:        "right",
+		indentSpaces:               2,
+		useTabToIndent:             true,
+		prefixString:               "\\t",
+		commentPolicy:              "remove",
+		preserveBlankLines:         true,
+		allowTrailingCommas:        true,
+	})
+	if err != nil {
+		t.Fatalf("buildFracturedOptions error: %v", err)
+	}
+	if opts.JsonEolStyle != fracturedjson.EolLF || opts.TableCommaPlacement != fracturedjson.CommaAfterPadding || opts.NumberListAlignment != fracturedjson.NumberRight || opts.CommentPolicy != fracturedjson.CommentRemove {
+		t.Fatalf("unexpected enum mapping in options: %+v", opts)
+	}
+	if opts.PrefixString != "\t" {
+		t.Fatalf("expected prefix string to decode to tab, got %q", opts.PrefixString)
+	}
+}
+
+func TestBuildFracturedOptionsInvalidEnum(t *testing.T) {
+	_, err := buildFracturedOptions(fracturedFlagValues{
+		jsonEolStyle:        "bad",
+		tableCommaPlacement: "before-padding-except-numbers",
+		numberListAlignment: "decimal",
+		commentPolicy:       "error",
+	})
+	if err == nil {
+		t.Fatalf("expected invalid enum error")
 	}
 }
