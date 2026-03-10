@@ -7,6 +7,7 @@ Default mode is `--fractured` when no mode flag is provided.
 ## Options
 
 * `--canonical`: the same output as `jq . --sort-keys`
+* `--sort-keys`: sort object keys case-insensitively
 * `--line`: everything on a single line
 * `--trailing-newline`: if a trailing newline should be emitted
 * `--eol`: end-of-line character(s) `[ lf | cr' | crlf ]`.  Default is `lf`.

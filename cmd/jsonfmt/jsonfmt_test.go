@@ -52,7 +52,7 @@ func TestApplyEOL(t *testing.T) {
 }
 
 func TestFormatJSONLine(t *testing.T) {
-	out, err := formatJSON([]byte("{\n  \"b\": 2,\n  \"a\": 1\n}\n"), false, true, false)
+	out, err := formatJSON([]byte("{\n  \"b\": 2,\n  \"a\": 1\n}\n"), false, true, false, false)
 	if err != nil {
 		t.Fatalf("formatJSON line error: %v", err)
 	}
@@ -62,7 +62,7 @@ func TestFormatJSONLine(t *testing.T) {
 }
 
 func TestFormatJSONCanonicalSortsKeys(t *testing.T) {
-	out, err := formatJSON([]byte("{\"b\":2,\"a\":1}"), true, false, false)
+	out, err := formatJSON([]byte("{\"b\":2,\"a\":1}"), true, false, false, false)
 	if err != nil {
 		t.Fatalf("formatJSON canonical error: %v", err)
 	}
@@ -75,7 +75,7 @@ func TestFormatJSONCanonicalSortsKeys(t *testing.T) {
 }
 
 func TestFormatJSONExpanded(t *testing.T) {
-	out, err := formatJSON([]byte("{\"k\":\"v\"}"), false, false, false)
+	out, err := formatJSON([]byte("{\"k\":\"v\"}"), false, false, false, false)
 	if err != nil {
 		t.Fatalf("formatJSON expanded error: %v", err)
 	}
@@ -85,11 +85,21 @@ func TestFormatJSONExpanded(t *testing.T) {
 }
 
 func TestFormatJSONFractured(t *testing.T) {
-	out, err := formatJSON([]byte("{\"a\":1,\"b\":2}"), false, false, true)
+	out, err := formatJSON([]byte("{\"a\":1,\"b\":2}"), false, false, true, false)
 	if err != nil {
 		t.Fatalf("formatJSON fractured error: %v", err)
 	}
 	if !strings.Contains(out, "\"a\"") || !strings.Contains(out, "\"b\"") {
 		t.Fatalf("fractured output missing keys: %q", out)
+	}
+}
+
+func TestFormatJSONLineSortKeysCaseInsensitive(t *testing.T) {
+	out, err := formatJSON([]byte("{\"b\":1,\"A\":2,\"a\":3,\"B\":4}"), false, true, false, true)
+	if err != nil {
+		t.Fatalf("formatJSON line sort-keys error: %v", err)
+	}
+	if out != "{\"A\":2,\"a\":3,\"B\":4,\"b\":1}" {
+		t.Fatalf("line sort-keys output = %q", out)
 	}
 }

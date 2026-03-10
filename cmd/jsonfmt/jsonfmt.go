@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
 
 	fracturedjson "github.com/FileFormatInfo/go-fractured-json"
@@ -57,7 +58,79 @@ func decodeJSON(input []byte) (any, error) {
 	return v, nil
 }
 
-func formatJSON(input []byte, canonical bool, line bool, fractured bool) (string, error) {
+func encodeSortedJSON(v any) ([]byte, error) {
+	switch t := v.(type) {
+	case map[string]any:
+		keys := make([]string, 0, len(t))
+		for k := range t {
+			keys = append(keys, k)
+		}
+		sort.Slice(keys, func(i, j int) bool {
+			li := strings.ToLower(keys[i])
+			lj := strings.ToLower(keys[j])
+			if li == lj {
+				return keys[i] < keys[j]
+			}
+			return li < lj
+		})
+
+		var buf bytes.Buffer
+		buf.WriteByte('{')
+		for i, k := range keys {
+			if i > 0 {
+				buf.WriteByte(',')
+			}
+			keyJSON, err := json.Marshal(k)
+			if err != nil {
+				return nil, err
+			}
+			buf.Write(keyJSON)
+			buf.WriteByte(':')
+			valJSON, err := encodeSortedJSON(t[k])
+			if err != nil {
+				return nil, err
+			}
+			buf.Write(valJSON)
+		}
+		buf.WriteByte('}')
+		return buf.Bytes(), nil
+	case []any:
+		var buf bytes.Buffer
+		buf.WriteByte('[')
+		for i, item := range t {
+			if i > 0 {
+				buf.WriteByte(',')
+			}
+			itemJSON, err := encodeSortedJSON(item)
+			if err != nil {
+				return nil, err
+			}
+			buf.Write(itemJSON)
+		}
+		buf.WriteByte(']')
+		return buf.Bytes(), nil
+	default:
+		return json.Marshal(t)
+	}
+}
+
+func maybeSortKeys(input []byte, sortKeys bool) ([]byte, error) {
+	if !sortKeys {
+		return input, nil
+	}
+	decoded, err := decodeJSON(input)
+	if err != nil {
+		return nil, err
+	}
+	return encodeSortedJSON(decoded)
+}
+
+func formatJSON(input []byte, canonical bool, line bool, fractured bool, sortKeys bool) (string, error) {
+	input, err := maybeSortKeys(input, sortKeys)
+	if err != nil {
+		return "", err
+	}
+
 	if fractured {
 		return fracturedjson.Reformat(string(input))
 	}
@@ -116,6 +189,7 @@ func main() {
 	var canonical = pflag.Bool("canonical", false, "Output canonical JSON (same as jq . --sort-keys)")
 	var line = pflag.Bool("line", false, "Output JSON on a single line")
 	var fractured = pflag.Bool("fractured", false, "Use fractured JSON formatting")
+	var sortKeys = pflag.Bool("sort-keys", false, "Sort object keys case-insensitively")
 	var trailingNewline = pflag.Bool("trailing-newline", false, "Emit a trailing newline")
 	var eol = pflag.String("eol", "lf", "End-of-line style: lf, cr, or crlf")
 
@@ -158,7 +232,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	formatted, err := formatJSON(input, canonicalMode, lineMode, fracturedMode)
+	formatted, err := formatJSON(input, canonicalMode, lineMode, fracturedMode, *sortKeys)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: unable to format JSON: %v\n", err)
 		os.Exit(1)

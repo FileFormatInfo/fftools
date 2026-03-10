@@ -6,6 +6,10 @@ stdout '^\{"z":3,"a":1,"b":\{"x":2,"y":1\}\}$'
 exec jsonfmt --canonical jsonfmt_input_small.json
 stdout '(?s)^\{\n  "a": 1,\n  "b": \{\n    "x": 2,\n    "y": 1\n  \},\n  "z": 3\n\}$'
 
+# explicit case-insensitive sort order
+exec jsonfmt --line --sort-keys jsonfmt_input_case.json
+stdout '^\{"A":2,"a":3,"B":4,"b":1\}$'
+
 # trailing newline and CRLF mode
 exec jsonfmt --line --trailing-newline --eol=crlf jsonfmt_input_array.json
 stdout '^\[\{"n":2,"s":"b"\},\{"n":1,"s":"a"\}\]\r\n$'
@@ -22,3 +26,6 @@ stderr 'use at most one of --canonical, --line, --fractured'
   {"n": 2, "s": "b"},
   {"n": 1, "s": "a"}
 ]
+
+-- jsonfmt_input_case.json --
+{"b":1,"A":2,"a":3,"B":4}
