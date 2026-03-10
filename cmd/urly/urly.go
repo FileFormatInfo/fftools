@@ -4,10 +4,12 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/url"
 	"os"
 	"strings"
 
+	"github.com/mattn/go-isatty"
 	"github.com/spf13/pflag"
 )
 
@@ -177,11 +179,25 @@ func main() {
 			if len(args) > 1 {
 				fmt.Fprintf(os.Stderr, "WARNING: Ignoring extra arguments (count=%d)\n", len(args)-1)
 			}
+		} else if !isatty.IsTerminal(os.Stdin.Fd()) {
+			bytesUrl, readErr := io.ReadAll(os.Stdin)
+			if readErr != nil {
+				fmt.Fprintf(os.Stderr, "ERROR: Unable to read URL from stdin: %v\n", readErr)
+				os.Exit(1)
+			}
+			strUrl := strings.TrimSpace(string(bytesUrl))
+			theUrl, parseErr = url.Parse(strUrl)
+			if parseErr != nil {
+				fmt.Fprintf(os.Stderr, "ERROR: Unable to parse URL from stdin: %v\n", parseErr)
+				os.Exit(1)
+			}
 		}
 	}
 
 	if theUrl == nil {
-		theUrl = &url.URL{}
+		fmt.Fprintf(os.Stderr, "usage: urly [options] <url>\n")
+		pflag.PrintDefaults()
+		os.Exit(1)
 	}
 
 	if *noScheme {
@@ -318,7 +334,7 @@ func main() {
 				fmt.Print(password)
 			}
 		}
-	case "host":
+	case "host", "hostname":
 		fmt.Print(theUrl.Hostname())
 	case "port":
 		fmt.Print(theUrl.Port())
