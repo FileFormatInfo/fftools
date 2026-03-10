@@ -102,7 +102,6 @@ func aliasFunc(f *pflag.FlagSet, name string) pflag.NormalizedName {
 	switch name {
 	case "user":
 		name = "username"
-		break
 	}
 	return pflag.NormalizedName(name)
 }
