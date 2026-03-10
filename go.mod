@@ -5,6 +5,7 @@ go 1.24.0
 toolchain go1.24.2
 
 require (
+	github.com/FileFormatInfo/go-fractured-json v0.0.0-20260310165450-a56e3d30f067
 	github.com/anyascii/go v0.3.2
 	github.com/mattn/go-isatty v0.0.20
 	github.com/olekukonko/tablewriter v1.0.7

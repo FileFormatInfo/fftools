@@ -126,6 +126,23 @@ builds:
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
+  - id: jsonfmt
+    main: ./cmd/jsonfmt/jsonfmt.go
+    binary: jsonfmt
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X main.VERSION={{.Version}}
+      - -X main.LASTMOD={{.CommitDate}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
+
   - id: unhexdump
     main: ./cmd/unhexdump/unhexdump.go
     binary: unhexdump
@@ -220,6 +237,7 @@ homebrew_casks:
       - ghash
       - hexdumpc
       - hosty
+      - jsonfmt
       - unhexdump
       - unicount
       - uniwhat
@@ -247,6 +265,7 @@ homebrew_casks:
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/ghash"]
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/hexdumpc"]
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/hosty"]
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/jsonfmt"]
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/unhexdump"]
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/unicount"]
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/uniwhat"]

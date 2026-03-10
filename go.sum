@@ -1,3 +1,5 @@
+github.com/FileFormatInfo/go-fractured-json v0.0.0-20260310165450-a56e3d30f067 h1:hUEtcfcbDhcnimttJSgIor4F5h15I0aXHgVFoa3BRmE=
+github.com/FileFormatInfo/go-fractured-json v0.0.0-20260310165450-a56e3d30f067/go.mod h1:vf0/8Lsb160Lag/yfTJ5MB/pAf/R4IYCKj/o8befaJs=
 github.com/anyascii/go v0.3.2 h1:87uFISteh7vwofK02srrPKtAvG6Wx7ozRjNh8uhfa7w=
 github.com/anyascii/go v0.3.2/go.mod h1:HDvbMmSpqJyIe+xtSkHmAYTjc8PzvO3l1Jmgx/IFUPs=
 github.com/fatih/color v1.15.0 h1:kOqh6YHBtK8aywxGerMG2Eq3H6Qgoqeo13Bk2Mv/nBs=

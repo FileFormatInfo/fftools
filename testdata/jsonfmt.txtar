@@ -1,0 +1,24 @@
+# line mode outputs compact single line
+exec jsonfmt --line jsonfmt_input_small.json
+stdout '^\{"z":3,"a":1,"b":\{"x":2,"y":1\}\}$'
+
+# canonical mode sorts keys recursively
+exec jsonfmt --canonical jsonfmt_input_small.json
+stdout '(?s)^\{\n  "a": 1,\n  "b": \{\n    "x": 2,\n    "y": 1\n  \},\n  "z": 3\n\}$'
+
+# trailing newline and CRLF mode
+exec jsonfmt --line --trailing-newline --eol=crlf jsonfmt_input_array.json
+stdout '^\[\{"n":2,"s":"b"\},\{"n":1,"s":"a"\}\]\r\n$'
+
+# reject conflicting modes
+! exec jsonfmt --line --canonical jsonfmt_input_small.json
+stderr 'use at most one of --canonical, --line, --fractured'
+
+-- jsonfmt_input_small.json --
+{"z":3,"a":1,"b":{"x":2,"y":1}}
+
+-- jsonfmt_input_array.json --
+[
+  {"n": 2, "s": "b"},
+  {"n": 1, "s": "a"}
+]

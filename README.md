@@ -21,6 +21,7 @@ Or download from [Releases](https://github.com/FileFormatInfo/fftools/releases)
 - [hexdumpc](cmd/hexdumpc/README.md): generate canonical hexdump (`hexdump -C`) output in case you don't have  [hexdump`]
 (https://man7.org/linux/man-pages/man1/hexdump.1.html) installed
 - [hosty](cmd/hosty/README.md): manipulate hostnames
+- [jsonfmt](cmd/jsonfmt/README.md): format JSON (expanded, canonical, line, fractured)
 - [unhexdump](cmd/unhexdump/README.md): convert `hexdump -c` output back into binary
 - [unicount](cmd/unicount/README.md): count Unicode codepoints in a file
 - [uniwhat](cmd/uniwhat/README.md): print the names of each Unicode character in a file
@@ -43,7 +44,6 @@ Or download from [Releases](https://github.com/FileFormatInfo/fftools/releases)
 
 - [ ] `body`: prints specific lines of a file (in between `head` and `tail`)
 - [ ] `bom-defuse`: remove byte-order-marks (BOMs) from files
-- [ ] `jsonfmt`: pretty print json (see [FracturedJson](https://github.com/j-brooke/FracturedJson/wiki))
 - [ ] `purify`: remove high bytes | non-UTF8 | non-ASCII | etc
 - [ ] `trilobyte`: translates bytes according to a map
 - [ ] `trune`: translates Unicode codepoints (runes) according to a map

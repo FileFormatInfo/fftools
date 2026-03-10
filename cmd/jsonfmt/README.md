@@ -2,6 +2,8 @@
 
 Format JSON files either expanded, compact or single-line
 
+Default mode is `--fractured` when no mode flag is provided.
+
 ## Options
 
 * `--canonical`: the same output as `jq . --sort-keys`
