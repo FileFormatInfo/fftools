@@ -13,6 +13,8 @@ TAG=${1:-DEFAULT}
 
 if [[ "$TAG" == "DEFAULT" ]]; then
 	echo "INFO: No tag provided, calculating next version based on git tags"
+	# get tags from remote
+	git fetch --tags
 	# get the latest tag from git and increment the patch version
 	LATEST_TAG=$(git tag --sort=v:refname | tail -1)
 	echo "INFO: Latest tag is '${LATEST_TAG}'"

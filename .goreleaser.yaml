@@ -20,7 +20,7 @@ builds:
       - -s
       - -w
       - -X main.VERSION={{.Version}}
-      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.LASTMOD={{.CommitDate}}
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
@@ -37,7 +37,7 @@ builds:
       - -s
       - -w
       - -X main.VERSION={{.Version}}
-      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.LASTMOD={{.CommitDate}}
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
@@ -54,7 +54,7 @@ builds:
       - -s
       - -w
       - -X main.VERSION={{.Version}}
-      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.LASTMOD={{.CommitDate}}
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
@@ -71,7 +71,7 @@ builds:
       - -s
       - -w
       - -X main.VERSION={{.Version}}
-      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.LASTMOD={{.CommitDate}}
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
@@ -88,7 +88,7 @@ builds:
       - -s
       - -w
       - -X main.VERSION={{.Version}}
-      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.LASTMOD={{.CommitDate}}
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
@@ -105,7 +105,7 @@ builds:
       - -s
       - -w
       - -X main.VERSION={{.Version}}
-      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.LASTMOD={{.CommitDate}}
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
@@ -122,7 +122,7 @@ builds:
       - -s
       - -w
       - -X main.VERSION={{.Version}}
-      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.LASTMOD={{.CommitDate}}
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
@@ -139,7 +139,7 @@ builds:
       - -s
       - -w
       - -X main.VERSION={{.Version}}
-      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.LASTMOD={{.CommitDate}}
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
@@ -156,7 +156,7 @@ builds:
       - -s
       - -w
       - -X main.VERSION={{.Version}}
-      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.LASTMOD={{.CommitDate}}
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
@@ -173,7 +173,7 @@ builds:
       - -s
       - -w
       - -X main.VERSION={{.Version}}
-      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.LASTMOD={{.CommitDate}}
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
@@ -190,7 +190,7 @@ builds:
       - -s
       - -w
       - -X main.VERSION={{.Version}}
-      - -X main.LASTMOD={{.Timestamp}}
+      - -X main.LASTMOD={{.CommitDate}}
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
