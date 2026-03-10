@@ -134,9 +134,6 @@ func printValidationResult(ok bool, onInvalid string, original string) {
 }
 
 func main() {
-	var help = pflag.BoolP("help", "h", false, "Show help message")
-	var version = pflag.Bool("version", false, "Print version information")
-
 	var toPunycode = pflag.Bool("to-punycode", false, "Convert hostname to punycode")
 	var fromPunycode = pflag.Bool("from-punycode", false, "Convert punycode hostname to Unicode")
 	var getPublicSuffix = pflag.Bool("public-suffix", false, "Output public suffix")
@@ -151,6 +148,9 @@ func main() {
 	var checkSuffix = pflag.Bool("check-suffix", false, "Validate that input is a known public suffix")
 	var onInvalid = pflag.String("on-invalid", "exit", "Validation failure behavior: exit, blank, original")
 
+	var help = pflag.BoolP("help", "h", false, "Show help message")
+	var version = pflag.Bool("version", false, "Print version information")
+
 	pflag.Parse()
 
 	if *version {
@@ -160,6 +160,7 @@ func main() {
 
 	if *help {
 		fmt.Printf("Usage: hosty [options] <hostname>\n\n")
+		pflag.PrintDefaults()
 		fmt.Printf("%s\n", helpText)
 		return
 	}
