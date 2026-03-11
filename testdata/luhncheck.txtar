@@ -1,0 +1,23 @@
+# known valid number
+exec luhncheck 79927398713
+stdout '^PASS$'
+
+# known invalid number
+! exec luhncheck 79927398714
+stdout '^FAIL$'
+
+# no-error-level suppresses fail exit code
+exec luhncheck --no-error-level 79927398714
+stdout '^FAIL$'
+
+# verbose prints corrected value when failing
+! exec luhncheck --verbose 79927398714
+stdout '(?s)^FAIL\nFixed: 79927398713$'
+
+# quiet suppresses PASS/FAIL text
+exec luhncheck --quiet --no-error-level 79927398714
+stdout '^$'
+
+# bad input still returns error even with no-error-level
+! exec luhncheck --no-error-level 79927x398714
+stderr '^ERROR: number must contain only digits$'

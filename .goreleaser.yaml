@@ -143,6 +143,40 @@ builds:
       - -X main.COMMIT={{.ShortCommit}}
       - -X main.BUILDER=goreleaser
 
+  - id: luhngen
+    main: ./cmd/luhngen/luhngen.go
+    binary: luhngen
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X main.VERSION={{.Version}}
+      - -X main.LASTMOD={{.CommitDate}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
+
+  - id: luhncheck
+    main: ./cmd/luhncheck/luhncheck.go
+    binary: luhncheck
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    ldflags:
+      - -s
+      - -w
+      - -X main.VERSION={{.Version}}
+      - -X main.LASTMOD={{.CommitDate}}
+      - -X main.COMMIT={{.ShortCommit}}
+      - -X main.BUILDER=goreleaser
+
   - id: unhexdump
     main: ./cmd/unhexdump/unhexdump.go
     binary: unhexdump
@@ -238,6 +272,8 @@ homebrew_casks:
       - hexdumpc
       - hosty
       - jsonfmt
+      - luhncheck
+      - luhngen
       - unhexdump
       - unicount
       - uniwhat
@@ -266,6 +302,8 @@ homebrew_casks:
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/hexdumpc"]
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/hosty"]
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/jsonfmt"]
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/luhncheck"]
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/luhngen"]
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/unhexdump"]
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/unicount"]
             system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/uniwhat"]

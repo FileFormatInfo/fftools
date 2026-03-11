@@ -1,0 +1,23 @@
+# seeded output is deterministic (16 digits)
+exec luhngen --seed=1
+stdout '^0177918506041292$'
+
+# seeded explicit prefix and length
+exec luhngen --seed=1 --prefix=12345 --length=12
+stdout '^123451779185$'
+
+# seeded card type preset (Amex: deterministic prefix + check digit)
+exec luhngen --seed=1 --cardtype=A
+stdout '^377791850604124$'
+
+# explicit length overrides card type length
+exec luhngen --seed=1 --cardtype=V --length=19
+stdout '^4\d{18}$'
+
+# trailing newline option
+exec luhngen --seed=1 --trailing-newline
+stdout '(?s)^0177918506041292\n$'
+
+# invalid card type
+! exec luhngen --cardtype=X
+stderr 'invalid --cardtype'

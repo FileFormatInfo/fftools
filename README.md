@@ -21,6 +21,8 @@ Or download from [Releases](https://github.com/FileFormatInfo/fftools/releases)
 - [hexdumpc](cmd/hexdumpc/README.md): generate canonical hexdump (`hexdump -C`) output in case you don't have  [`hexdump`](https://man7.org/linux/man-pages/man1/hexdump.1.html) installed
 - [hosty](cmd/hosty/README.md): manipulate hostnames
 - [jsonfmt](cmd/jsonfmt/README.md): format JSON (expanded, canonical, line, fractured)
+- [luhncheck](cmd/luhncheck/README.md): check numbers against the Luhn algorithm
+- [luhngen](cmd/luhngen/README.md): generate numbers that pass Luhn checks
 - [unhexdump](cmd/unhexdump/README.md): convert `hexdump -c` output back into binary
 - [unicount](cmd/unicount/README.md): count Unicode codepoints in a file
 - [uniwhat](cmd/uniwhat/README.md): print the names of each Unicode character in a file
