@@ -3,15 +3,10 @@
 
 ## Everywhere
 
-- [ ] goreleaser
-- [ ] Packaging: brew
-- [ ] Packaging: deb
 - [ ] [release security](https://github.com/goreleaser/example-secure)
 
 ## Documentation
 
-- [ ] README file in each `cmd` directory
-- [ ] Embed README in program and print for `--help`
 - [ ] Generate [man pages](https://gabmus.org/posts/man_pages_with_markdown_and_pandoc/) from READMEs
 - [ ] Generate webpages from READMEs
 - [ ] Publish `/docs` to Github Pages

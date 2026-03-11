@@ -18,8 +18,7 @@ Or download from [Releases](https://github.com/FileFormatInfo/fftools/releases)
 - [bytecount](cmd/bytecount/README.md): counts the number of occurrences of each byte
 - [certinfo](cmd/certinfo/README.md): print info about an x509 (aka SSL/HTTPS) certificate
 - [ghash](cmd/ghash/README.md): calculate file hashes
-- [hexdumpc](cmd/hexdumpc/README.md): generate canonical hexdump (`hexdump -C`) output in case you don't have  [hexdump`]
-(https://man7.org/linux/man-pages/man1/hexdump.1.html) installed
+- [hexdumpc](cmd/hexdumpc/README.md): generate canonical hexdump (`hexdump -C`) output in case you don't have  [`hexdump`](https://man7.org/linux/man-pages/man1/hexdump.1.html) installed
 - [hosty](cmd/hosty/README.md): manipulate hostnames
 - [jsonfmt](cmd/jsonfmt/README.md): format JSON (expanded, canonical, line, fractured)
 - [unhexdump](cmd/unhexdump/README.md): convert `hexdump -c` output back into binary
