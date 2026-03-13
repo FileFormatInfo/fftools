@@ -24,6 +24,7 @@ require (
 	github.com/olekukonko/errors v0.0.0-20250405072817-4e6d85265da6 // indirect
 	github.com/olekukonko/ll v0.0.8 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
+	github.com/wlynxg/chardet v1.0.4 // indirect
 	golang.org/x/sys v0.37.0 // indirect
 	golang.org/x/tools v0.33.0 // indirect
 )
